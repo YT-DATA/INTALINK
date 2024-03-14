@@ -2,7 +2,7 @@
 社区
 Hello~欢迎来到 Intalink 开源社区，首先感谢一直以来支持 Intalink 的你们 ❤
 社区随时都欢迎各种贡献，无论是简单的错别字修正、bug 修复还是增加新功能，欢迎提 issue 或 pull request 至 Github 社区，也可以加入微信群：群号 **********联系我们。
-[项目地址]：https://github.com/ytlmd/INTALINK
+项目地址：https://github.com/ytlmd/INTALINK
 提问指南
 当您在使用 Intalink 相关组件时遇到困难，可以查阅相关项目的文档查看解决方案；
 如果文档解决不了您的问题，欢迎社区所有同学通过 Github issue 区提交反馈，在 issue 里写下异常现象和复现步骤，或者是其他您想咨询的问题。发 issue 也可以方便后人，后人遇到问题时通过搜索引擎就能搜到解决方案。
@@ -11,7 +11,7 @@ Hello~欢迎来到 Intalink 开源社区，首先感谢一直以来支持 Intali
 欢迎参与 Intalink 开源社区共建，您可以通过以下的方式参与共建：
 o作为技术同学，你是否有过“想参与某个开源项目的开发、但是不知道从何下手”的感觉？ 为了帮助大家更好的参与开源项目，Intalink 社区会定期发布适合新手的新手开发任务，帮助大家 learning by doing!
 
-oIntalink 社区任务 (https://github.com/ytlmd/community/issues/1) 欢迎认领!具体上手步骤可以看新手攻略：从零开始成为 Intalink 贡献者
+oIntalink [社区任务] (https://github.com/ytlmd/community/issues/1) 欢迎认领!具体上手步骤可以看新手攻略：从零开始成为 Intalink 贡献者
 参与代码或文档贡献：
 o无论是简单的错别字修正、bug 修复还是增加新功能，欢迎您的贡献！
 Intalink 社区组织架构
@@ -27,7 +27,7 @@ Member
 贡献过一个有价值的 PR，例如一个 Easy 级别的社区开发任务
 有意愿一起维护社区
 如何申请成为 Member ?
-在 community repo （https://github.com/ytlmd/community/issues）发个 issue，包括：
+在 [community repo] （https://github.com/ytlmd/community/issues）发个 issue，包括：
 做个自我介绍
 贴一下自己贡献过的 PR
 社区维护者会即时回复您。
