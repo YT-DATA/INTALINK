@@ -25,18 +25,20 @@ Contributor：
 
 在 Intalink 的正式项目中成功提交一个 PR 并合并。
 
+
+
 Member:
 
-贡献过一个有价值的 PR，例如一个 Easy 级别的社区开发任务
+- 贡献过一个有价值的 PR，例如一个 Easy 级别的社区开发任务
 
-有意愿一起维护社区
+- 有意愿一起维护社区
 
 如何申请成为 Member ?
 
 在 [community repo](https://github.com/ytlmd/community/issues)发个 issue，包括：
 做个自我介绍
 
-贴一下自己贡献过的 PR
+- 贴一下自己贡献过的 PR
 社区维护者会即时回复您。
 
 职责
@@ -49,29 +51,34 @@ Triage 权限。有权限操作 issue 和 pr，例如打 label、分配问题。
 
 详细的权限说明见 [permissions-for-each-role](https://docs.github.com/en/organizations/managing-user-access-to-your-organizations-repositories/managing-repository-roles/repository-roles-for-an-organization#permissions-for-each-role)
 
+
+
 Committer：
 
 贡献过的 PR 满足下列条件:
 
-合并的 PR 达到 10 个；
+- 合并的 PR 达到 10 个；
 
-其中至少包含 1 个 Hard 级别 PR, 或者 4 个 Medium 级别 PR；
+- 其中至少包含 1 个 Hard 级别 PR, 或者 4 个 Medium 级别 PR；
 
 职责
 
 社区咨询支持；
 
-积极响应指派给您的 Issue 或 PR；
+- 积极响应指派给您的 Issue 或 PR；
 
-对于社区重大决定的投票权；
+- 对于社区重大决定的投票权；
 
-Review 社区的 PR；
+- Review 社区的 PR；
 
 权限
 
-Pull Request review 权限；
+- Pull Request review 权限；
 
-Pull Request approve 权限；
+- Pull Request approve 权限；
+
+
+
 
 #Core Team
 
@@ -89,6 +96,9 @@ Core Team 的职责和权限
 - 决策关于项目的重大变更和方向。
 - 管理社区和项目的整体运作。
 - 导师新成员，并扩展 Core Team。
+
+
+
 
 #User Community
 
