@@ -9,7 +9,7 @@ Hello~欢迎来到 Intalink 开源社区，首先感谢一直以来支持 Intali
 欢迎参与 Intalink 开源社区共建，您可以通过以下的方式参与共建：
 o作为技术同学，你是否有过“想参与某个开源项目的开发、但是不知道从何下手”的感觉？ 为了帮助大家更好的参与开源项目，Intalink 社区会定期发布适合新手的新手开发任务，帮助大家 learning by doing!
 
-oIntalink [社区任务] (https://github.com/ytlmd/community/issues/1) 欢迎认领!具体上手步骤可以看新手攻略：从零开始成为 Intalink 贡献者
+oIntalink [社区任务](https://github.com/ytlmd/community/issues/1) 欢迎认领!具体上手步骤可以看新手攻略：从零开始成为 Intalink 贡献者
 参与代码或文档贡献：
 o无论是简单的错别字修正、bug 修复还是增加新功能，欢迎您的贡献！
 Intalink 社区组织架构
