@@ -22,13 +22,19 @@ Intalink 社区组织架构
 #Developer Group（代码层面）
 
 Contributor
+
 如何成为 Contributor：
+
 在 Intalink 的正式项目中成功提交一个 PR 并合并。
 
 Member
+
 加入 Intalink GitHub 组织，成为 Intalink 开源社区的一员。
-   满足以下条件可以申请成为 Member:
+
+满足以下条件可以申请成为 Member:
+
 贡献过一个有价值的 PR，例如一个 Easy 级别的社区开发任务
+
 有意愿一起维护社区
 如何申请成为 Member ?
 在 [community repo](https://github.com/ytlmd/community/issues)发个 issue，包括：
