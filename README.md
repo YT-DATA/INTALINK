@@ -2,7 +2,7 @@
 社区
 Hello~欢迎来到 Intalink 开源社区，首先感谢一直以来支持 Intalink 的你们 ❤
 社区随时都欢迎各种贡献，无论是简单的错别字修正、bug 修复还是增加新功能，欢迎提 issue 或 pull request 至 Github 社区，也可以加入微信群：群号 **********联系我们。
-项目地址：https://github.com/ytlmd/INTALINK
+[项目地址]：https://github.com/ytlmd/INTALINK
 提问指南
 当您在使用 Intalink 相关组件时遇到困难，可以查阅相关项目的文档查看解决方案；
 如果文档解决不了您的问题，欢迎社区所有同学通过 Github issue 区提交反馈，在 issue 里写下异常现象和复现步骤，或者是其他您想咨询的问题。发 issue 也可以方便后人，后人遇到问题时通过搜索引擎就能搜到解决方案。
