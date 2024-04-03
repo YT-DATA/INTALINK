@@ -14,94 +14,62 @@
 ![image](https://github.com/yt-data/INTALINK/assets/162880729/f76d6a0e-2eb1-4dc9-9a6d-dff01ab9446d)
 
 
-#参与代码或文档贡献：
-o无论是简单的错别字修正、bug 修复还是增加新功能，欢迎您的贡献！
-Intalink 社区组织架构
+# 目录
 
-![image](https://github.com/ytlmd/INTALINK/assets/162880729/f371b48e-7b65-4333-ab4c-e0e9e43f7d8e)
-
-#Developer Group（代码层面）
-
-Contributor：
-
-在 Intalink 的正式项目中成功提交一个 PR 并合并。
+- [架构方案](#架构方案)
+- [安装](#安装)
+- [特性简介](#特性一览)
+- [贡献](#贡献)
+- [路线图](#路线图)
+- [联系我们](#联系我们)
 
 
+# 架构方案
 
-Member:
+![image](https://github.com/yt-data/INTALINK/assets/162880729/efe18b27-5f78-475c-afe0-7c37cbf5f3d6)
 
-- 贡献过一个有价值的 PR，例如一个 Easy 级别的社区开发任务
+## 核心能力主要有以下几个部分:
+- 自动数据关联生成：自动探测和构建数据表之间的关系，支持复杂的多表查询，即使涉及中间表也能自动处理。
 
-- 有意愿一起维护社区
+- 查询语句自动构建：用户只需指明所需的数据项，软件即可生成正确的SQL查询语句，避免了手工编写的复杂性。
 
-如何申请成为 Member ?
+- 数据应用自由化：提供了一个自助式的查询环境，允许用户灵活地尝试和探索不同的数据组合，实现数据的自主使用。
 
-在 [community repo](https://github.com/ytlmd/community/issues)发个 issue，包括：
-做个自我介绍
+- 降低技术门槛：数据开发人员不再需要繁琐的业务调研和数据资源梳理，而数据运维人员则减少了技术支持的工作量。
 
-- 贴一下自己贡献过的 PR
-社区维护者会即时回复您。
+- 增强数据治理：帮助数据管理人员快速识别问题和做出决策，尤其是在面对数据孤岛的问题时。
 
-职责
-
-Member 需要一起帮忙回复issue/pr，triage（把 issue 分配给对应模块的负责人）
-
-权限
-
-Triage 权限。有权限操作 issue 和 pr，例如打 label、分配问题。
-
-详细的权限说明见 [permissions-for-each-role](https://docs.github.com/en/organizations/managing-user-access-to-your-organizations-repositories/managing-repository-roles/repository-roles-for-an-organization#permissions-for-each-role)
-
-
-
-Committer：
-
-贡献过的 PR 满足下列条件:
-
-- 合并的 PR 达到 10 个；
-
-- 其中至少包含 1 个 Hard 级别 PR, 或者 4 个 Medium 级别 PR；
-
-职责
-
-社区咨询支持；
-
-- 积极响应指派给您的 Issue 或 PR；
-
-- 对于社区重大决定的投票权；
-
-- Review 社区的 PR；
-
-权限
-
-- Pull Request review 权限；
-
-- Pull Request approve 权限；
+- 功能增强：对现有软件功能进行升级，例如将BI工具中的手工分析转变为智能分析，以及自动化数据迁移和查询功能。
 
 
 
 
-#Core Team
 
-如何成为 Core Team 成员
+# 安装
 
-Core Team 成员通常是项目的主要决策者和领导者，负责项目的战略方向和高层管理。要成为 Core Team 的一员，您通常需要：
+教程
+- [快速开始](#测试套装)
+  - [源码安装](#测试套装)
+- [使用手册](#测试套装)
+  - [知识库](#测试套装)
+  - [数据对话](#测试套装)
+  - Excel对话
+  - 数据库对话
+- 进阶教程
+  - 智能应用使用
+  - 多模型管理
+  - 命令行使用
+- 模型服务部署
+  - 单机部署
+  - 集群部署
+- 如何Debug
+- AWEL
+- FAQ
 
-- 在项目中长期持续的显著贡献。
-- 在社区中展现出领导力和承担责任的意愿。
-- 获得现有 Core Team 成员的推荐和批准。
-
-Core Team 的职责和权限
-
-- 制定项目的愿景和路线图。
-- 决策关于项目的重大变更和方向。
-- 管理社区和项目的整体运作。
-- 导师新成员，并扩展 Core Team。
 
 
 
-
-#User Community
+# 特性一览
 
 如何参与 User Community
 
