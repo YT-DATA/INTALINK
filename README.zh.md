@@ -1,9 +1,15 @@
 # INTALINK: 用私有化LLM技术定义数据库下一代交互方式
 
 
-<div align="center">
-  English | Discord | 文档 | 常见问题 | 社区 | Paper
-</div>
+
+<p align="center">
+  <a href="链接地址">English</a> |
+  <a href="链接地址">Discord</a> |
+  <a href="链接地址">文档</a> |
+  <a href="链接地址">微信</a> |
+  <a href="https://github.com/yt-data/community/blob/main/README.md">社区</a> |
+  <a href="链接地址">Paper</a>
+</p>
 
 # INTALINK 是什么？
 🤖️Intalink是一个智能数据集成工具，它自动识别并构建数据表之间的关联关系，允许用户轻松执行数据查询，无需了解底层数据库逻辑，简化多表数据集成的过程。
