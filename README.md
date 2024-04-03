@@ -1,6 +1,9 @@
-Hello~欢迎来到 Intalink 开源社区，首先感谢一直以来支持 Intalink 的你们 ❤
-社区随时都欢迎各种贡献，无论是简单的错别字修正、bug 修复还是增加新功能，欢迎提 issue 或 pull request 至 Github 社区，也可以加入微信群：群号 **********联系我们。
+# INTALINK: 用私有化LLM技术定义数据库下一代交互方式
 项目地址：https://github.com/ytlmd/INTALINK
+
+<div align="center">
+  English | Discord | 文档 | 常见问题 | 社区 | Paper
+</div>
 
 #提问指南
 当您在使用 Intalink 相关组件时遇到困难，可以查阅相关项目的文档查看解决方案；
