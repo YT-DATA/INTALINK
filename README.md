@@ -1,20 +1,18 @@
 # INTALINK: 用私有化LLM技术定义数据库下一代交互方式
-项目地址：https://github.com/ytlmd/INTALINK
+
 
 <div align="center">
   English | Discord | 文档 | 常见问题 | 社区 | Paper
 </div>
 
-#提问指南
-当您在使用 Intalink 相关组件时遇到困难，可以查阅相关项目的文档查看解决方案；
-如果文档解决不了您的问题，欢迎社区所有同学通过 Github issue 区提交反馈，在 issue 里写下异常现象和复现步骤，或者是其他您想咨询的问题。发 issue 也可以方便后人，后人遇到问题时通过搜索引擎就能搜到解决方案。
-如果 issue 回复不及时，可以去钉钉群里找群管理员，群管理员会帮忙催项目维护者回 issue。
+# INTALINK 是什么？
+🤖️Intalink是一个智能数据集成工具，它自动识别并构建数据表之间的关联关系，允许用户轻松执行数据查询，无需了解底层数据库逻辑，简化多表数据集成的过程。
 
-#参与开源共建
-欢迎参与 Intalink 开源社区共建，您可以通过以下的方式参与共建：
-o作为技术同学，你是否有过“想参与某个开源项目的开发、但是不知道从何下手”的感觉？ 为了帮助大家更好的参与开源项目，Intalink 社区会定期发布适合新手的新手开发任务，帮助大家 learning by doing!
+# 效果演示
+🔥🔥🔥 [intalink开源演示1.0.3](http://39.106.28.179/intalink/login?redirect=/index)
 
-oIntalink [社区任务](https://github.com/ytlmd/community/issues/1) 欢迎认领!具体上手步骤可以看新手攻略：从零开始成为 Intalink 贡献者
+![image](https://github.com/yt-data/INTALINK/assets/162880729/f76d6a0e-2eb1-4dc9-9a6d-dff01ab9446d)
+
 
 #参与代码或文档贡献：
 o无论是简单的错别字修正、bug 修复还是增加新功能，欢迎您的贡献！
