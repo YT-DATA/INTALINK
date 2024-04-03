@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intalink.configoperations.mapper.dataSource.IkBpDataSourceBasicMapper">
+
+    <resultMap id="DataSourceBasicResultMap" type="com.intalink.configoperations.domain.dataSource.IkBpDataSourceBasic">
+        <id property="dataSourceId" column="data_source_id" jdbcType="INTEGER"/>
+        <result property="dataSourceName" column="data_source_name" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="databaseType" column="database_type" jdbcType="VARCHAR"/>
+        <result property="isDel" column="is_del" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="selectDataSourceBasicVo">
+        select data_source_id,
+               data_source_name,
+               url,
+               user_name,
+               password,
+               database_type,
+               is_del
+        from ik_bp_data_source_basic
+    </sql>
+    <update id="deleteByDataSourceId" parameterType="com.intalink.configoperations.domain.dataSource.IkBpDataSourceBasic">
+            UPDATE ik_bp_data_source_basic
+            SET is_del = 1
+            WHERE data_source_id IN
+            <foreach item="item" index="index" collection="dataSourceIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+    </update>
+
+    <select id="selectDataSourceList" parameterType="com.intalink.configoperations.domain.dataSource.vo.IkBpDataSourceBasicVo" resultMap="DataSourceBasicResultMap">
+        <include refid="selectDataSourceBasicVo"/>
+        <where>
+            <if test="dataSourceName != null and dataSourceName != ''">
+                AND data_source_name like concat('%', #{dataSourceName}, '%')
+            </if>
+            AND is_del = 0
+        </where>
+    </select>
+    <select id="selectDataSourceById" resultType="com.intalink.configoperations.domain.dataSource.IkBpDataSourceBasic">
+        <include refid="selectDataSourceBasicVo"/>
+        <where>
+            <if test="dataSourceId != null and dataSourceId != ''">
+                AND data_source_id = #{dataSourceId}
+            </if>
+            AND is_del = 0
+        </where>
+    </select>
+    <select id="selectAll" resultType="com.intalink.configoperations.domain.dataSource.IkBpDataSourceBasic">
+        <include refid="selectDataSourceBasicVo"/>
+        <where>
+            AND is_del = 0
+        </where>
+    </select>
+
+
+</mapper>

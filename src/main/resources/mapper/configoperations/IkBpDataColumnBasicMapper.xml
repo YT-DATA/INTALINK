@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intalink.configoperations.mapper.dataColumn.IkBpDataColumnBasicMapper">
+
+    <resultMap id="DataColumnResultMap" type="com.intalink.configoperations.domain.dataColumn.IkBpDataColumnBasic">
+        <id property="dataColumnId" column="data_column_id" jdbcType="INTEGER"/>
+        <result property="dataColumnCode" column="data_column_code" jdbcType="VARCHAR"/>
+        <result property="dataColumnName" column="data_column_name" jdbcType="VARCHAR"/>
+        <result property="dataColumnRemark" column="data_column_remark" jdbcType="VARCHAR"/>
+        <result property="dataTableId" column="data_table_id" jdbcType="INTEGER"/>
+        <result property="isDel" column="is_del" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="DataColumnList">
+        select data_column_id, data_column_code, data_column_name, data_column_remark, data_table_id, is_del
+        from ik_bp_data_column_basic
+    </sql>
+    <insert id="saveColumns">
+        insert into ik_bp_data_column_basic (data_column_code,data_column_name,data_column_remark,data_table_id,is_del)
+        <foreach collection="list" item="item" index="index" separator="union all">
+            select
+            #{item.columnCode,jdbcType=VARCHAR},
+            #{item.columnName,jdbcType=VARCHAR},
+            #{item.columnRemark,jdbcType=VARCHAR},
+            #{item.dataTableId},
+            0
+        </foreach>
+    </insert>
+    <update id="deleteByDataTableId">
+        UPDATE ik_bp_data_column_basic
+        SET is_del = 1
+        WHERE data_table_id IN
+        <foreach item="item" index="index" collection="dataTableIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+    <select id="selectDataColumnList"
+            resultType="com.intalink.configoperations.domain.dataColumn.vo.IkBpDataColumnBasicVo">
+        select
+        ibdcb.data_column_id,ibdcb.data_column_code,ibdcb.data_column_name,ibdcb.data_column_remark,ibdcb.data_table_id,ibdcb.is_del,
+        ibdtb.data_table_name dataTableName ,ibdmb.data_model_id ,ibdmb.data_model_name dataModelName
+        from ik_bp_data_column_basic ibdcb
+        left join ik_bp_data_table_basic ibdtb on ibdtb.data_table_id = ibdcb.data_table_id
+        left join ik_bp_data_model_basic ibdmb on ibdmb.data_model_id = ibdtb.data_model_id
+        where 1=1
+        <if test="dataColumnName != null and dataColumnName != ''">
+            AND (LOWER(ibdcb.data_column_name) like LOWER(#{dataColumnName}) OR LOWER(ibdcb.data_column_code) like
+            LOWER(#{dataColumnName}))
+        </if>
+        <if test="dataTableId != null and dataTableId != ''">
+            AND ibdcb.data_table_id = #{dataTableId}
+        </if>
+        <if test="dataModelId != null and dataModelId != ''">
+            AND ibdmb.data_model_id = #{dataModelId}
+        </if>
+        AND ibdcb.is_del = 0
+        ORDER BY ibdtb.data_table_name DESC
+    </select>
+
+    <select id="selectDataColumnById" resultType="com.intalink.configoperations.domain.dataColumn.IkBpDataColumnBasic">
+        <include refid="DataColumnList"/>
+        <where>
+            <if test="dataTableId != null and dataTableId != ''">
+                AND data_column_id = #{dataTableId}
+            </if>
+            AND is_del = 0
+        </where>
+    </select>
+    <select id="selectDataColumnBasicByTableId"
+            resultType="com.intalink.configoperations.domain.dataColumn.IkBpDataColumnBasic">
+        <include refid="DataColumnList"/>
+        <where>
+            <if test="dataColumnId != null and dataColumnId != ''">
+                AND data_table_id = #{dataColumnId}
+            </if>
+            AND is_del = 0
+        </where>
+    </select>
+    <select id="selectByTableIdAndColumnCode"
+            resultType="com.intalink.configoperations.domain.dataColumn.IkBpDataColumnBasic">
+        <include refid="DataColumnList"/>
+        <where>
+            <if test="dataTablelId != null and dataTablelId != ''">
+                AND data_table_id = #{dataTablelId}
+            </if>
+            <if test="dataColumnCode != null and dataColumnCode != ''">
+                AND data_column_code = #{dataColumnCode}
+            </if>
+        </where>
+    </select>
+
+    <update id="deleteByDataColumnId"
+            parameterType="com.intalink.configoperations.domain.dataColumn.IkBpDataColumnBasic">
+        UPDATE ik_bp_data_column_basic
+        SET is_del = 1
+        WHERE data_column_id IN
+        <foreach item="item" index="index" collection="dataColumnIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

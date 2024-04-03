@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intalink.configoperations.mapper.model.IkBpDataModelBasicMapper">
+
+    <resultMap id="DataModelResultMap" type="com.intalink.configoperations.domain.model.IkBpDataModelBasic">
+        <id property="dataModelId" column="data_model_id" jdbcType="INTEGER"/>
+        <result property="dataModelCode" column="data_model_code" jdbcType="VARCHAR"/>
+        <result property="dataModelName" column="data_model_name" jdbcType="VARCHAR"/>
+        <result property="dataModelRemark" column="data_model_remark" jdbcType="VARCHAR"/>
+        <result property="isDel" column="is_del" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="DataModelList">
+        select data_model_id, data_model_code, data_model_name, data_model_remark, is_del
+        from ik_bp_data_model_basic
+    </sql>
+
+    <update id="deleteByDataTableId">
+        UPDATE ik_bp_data_model_basic
+        SET is_del = 1
+        WHERE data_model_id IN
+        <foreach item="item" index="index" collection="dataModelIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+    <insert id="saveAll">
+        insert into ik_bp_data_model_basic
+        (data_model_code,data_model_name,data_model_remark,isDel)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.dataModelCode},
+            #{item.dataModelName},
+            #{item.dataModelRemark},
+            0
+            )
+        </foreach>
+    </insert>
+    <insert id="saveModel" useGeneratedKeys="true" keyProperty="dataModelId">
+        insert into ik_bp_data_model_basic (data_model_code,data_model_name,data_model_remark,is_del)
+        values
+        (#{dataModelCode},
+         #{dataModelName,jdbcType=VARCHAR},
+         #{dataModelRemark,jdbcType=VARCHAR},
+         0)
+    </insert>
+
+    <select id="selectDataSourceList"
+            resultType="com.intalink.configoperations.domain.model.vo.IkBpDataModelBasicVo">
+        select
+        ibdmb.data_model_id,ibdmb.data_model_name,ibdmb.data_model_code,ibdmb.data_model_remark,ibdmb.is_del,
+        count(ibdtb.data_table_id)
+        dataTableCount from ik_bp_data_model_basic ibdmb
+        left join ik_bp_data_table_basic ibdtb on ibdtb.data_model_id = ibdmb.data_model_id
+        where 1=1
+        <if test="dataModelName != null and dataModelName != ''">
+            AND ( LOWER(data_model_name) like LOWER(#{dataModelName}) OR LOWER(data_model_code) like
+            LOWER(#{dataModelName}))
+        </if>
+        AND ibdmb.is_del = 0
+        group by ibdmb.data_model_id
+    </select>
+
+    <select id="selectDataModelById"
+            resultType="com.intalink.configoperations.domain.model.vo.IkBpDataModelBasicVo">
+        select
+        ibdmb.data_model_id,ibdmb.data_model_name,ibdmb.data_model_code,ibdmb.data_model_remark,ibdmb.is_del,ibdtb.data_table_code dataTableCode
+        from ik_bp_data_model_basic ibdmb
+        left join ik_bp_data_table_basic ibdtb on ibdtb.data_model_id = ibdmb.data_model_id
+        WHERE ibdmb.data_model_id IN
+        <foreach item="item" index="index" collection="dataModelIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+            AND ibdmb.is_del = 0 AND ibdtb.is_del = 0
+    </select>
+    <select id="selectOneByModelName"
+            resultType="com.intalink.configoperations.domain.model.IkBpDataModelBasic">
+        <include refid="DataModelList"/>
+        <where>
+            <if test="dataModelName != null and dataModelName != ''">
+                AND data_model_name = #{dataModelName}
+            </if>
+        </where>
+    </select>
+    <select id="selectAll" resultType="com.intalink.configoperations.domain.model.IkBpDataModelBasic">
+        <include refid="DataModelList"/>
+        <where>
+            AND is_del = 0
+        </where>
+    </select>
+</mapper>
