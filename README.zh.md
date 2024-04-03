@@ -1,6 +1,23 @@
 # INTALINK:数据集成与智能关联分析平台
 
 
+<p align="center">
+  <a href="https://github.com/yt-data/intalink/stargazers">
+    <img src="https://img.shields.io/github/stars/yt-data/intalink.svg?style=social&label=Stars" alt="GitHub stars"/>
+  </a><!--
+  --><a href="https://github.com/yt-data?tab=followers">
+    <img src="https://img.shields.io/github/followers/yt-data.svg?style=social&label=Follow" alt="GitHub followers"/>
+  </a><!--
+  --><a href="你的Discord链接">
+    <img src="https://img.shields.io/badge/Discord-Join%20intalink-blue.svg?style=social&logo=discord" alt="Join Discord"/>
+  </a><!--
+  --><a href="你的LinkedIn链接">
+    <img src="https://img.shields.io/badge/LinkedIn-Follow%20intalink-blue.svg?style=social&logo=linkedin" alt="LinkedIn Follow"/>
+  </a><!--
+  --><a href="你的Stack Overflow链接">
+    <img src="https://img.shields.io/badge/Stack%20Overflow-Ask%20intalink-orange.svg?style=social&logo=stack-overflow" alt="Stack Overflow"/>
+  </a>
+</p>
 
 <p align="center">
   <a href="链接地址">English</a> |
