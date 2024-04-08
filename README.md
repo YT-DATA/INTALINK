@@ -69,9 +69,9 @@
 # 安装
 
 教程
-- [快速开始-v0.8](#特性一览)
+- [快速开始](https://www.yuque.com/chenshiyi-ur8az/tt35ml/biecgo4ey3w102nh)
   - [源码安装-v0.8](#特性一览)
-- [使用手册-v0.8](#特性一览)
+- [使用手册-v0.8](https://www.yuque.com/chenshiyi-ur8az/tt35ml/vgk4qc60g1bb37v1)
   - [知识库-v0.8](#特性一览)
   - [数据对话-v0.8](#特性一览)
   - [Excel对话-v0.8](#特性一览)
