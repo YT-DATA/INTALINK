@@ -22,10 +22,9 @@
 <p align="center">
   <a href="链接地址">English</a> |
   <a href="链接地址">Discord-v0.8</a> |
-  <a href="链接地址">文档-v0.8</a> |
-  <a href="#联系我们">微信</a> |
+  <a href="https://www.yuque.com/chenshiyi-ur8az/tt35ml">文档</a> |
+  <a href="#联系我们">微信</a> |  
   <a href="https://github.com/yt-data/community/blob/main/README.md">社区</a> |
-  <a href="链接地址">Paper-v0.8</a>
 </p>
 
 # INTALINK 是什么？
@@ -70,9 +69,9 @@
 # 安装
 
 教程
-- [快速开始-v0.8](#特性一览)
+- [快速开始](https://www.yuque.com/chenshiyi-ur8az/tt35ml/biecgo4ey3w102nh)
   - [源码安装-v0.8](#特性一览)
-- [使用手册-v0.8](#特性一览)
+- [使用手册-v0.8](https://www.yuque.com/chenshiyi-ur8az/tt35ml/vgk4qc60g1bb37v1)
   - [知识库-v0.8](#特性一览)
   - [数据对话-v0.8](#特性一览)
   - [Excel对话-v0.8](#特性一览)
