@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <a href="link address">Chinese</a> |
+  <a href="https://github.com/YT-DATA/INTALINK/blob/main/README.zh.md">Chinese</a> |
   <a href="link address">Discord-v0.8</a> |
   <a href="https://www.yuque.com/chenshiyi-ur8az/tt35ml">Documentation</a> |
   <a href="#contact-us">WeChat</a> |  
