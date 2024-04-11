@@ -1,4 +1,4 @@
-![企业微信](https://github.com/YT-DATA/INTALINK/assets/162880729/a324cf43-7c38-4e2c-973c-c08acd80f635)# INTALINK:数据集成与智能关联分析平台
+# INTALINK:数据集成与智能关联分析平台
 
 
 <p align="center">
