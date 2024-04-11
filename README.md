@@ -116,7 +116,6 @@ Apache License 2.0
 
 ### Contact Us
 - WeChat: YT18526434675
-- ![image](https://github.com/YT-DATA/INTALINK/assets/162880729/ef6e6248-0c0c-494a-ae29-e7a02eed387a)
-
+- ![企业微信](https://github.com/YT-DATA/INTALINK/assets/162880729/0f34328a-3d8a-4271-b199-96e7bc5e2ca6)
 
 - [Official Website](https://www.idataops.com.cn/h-col-110.html)
