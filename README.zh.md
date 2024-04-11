@@ -1,4 +1,4 @@
-# INTALINK:数据集成与智能关联分析平台
+![企业微信](https://github.com/YT-DATA/INTALINK/assets/162880729/a324cf43-7c38-4e2c-973c-c08acd80f635)# INTALINK:数据集成与智能关联分析平台
 
 
 <p align="center">
@@ -131,7 +131,8 @@ Apache License 2.0
 
 # 联系我们
 - 微信：YT18526434675
-- ![Uploading image.png…]()
+- ![企业微信](https://github.com/YT-DATA/INTALINK/assets/162880729/1c739c36-160c-474d-9f9b-c43e46dd1159)
+
 
 
 - [产品官网](https://www.idataops.com.cn/h-col-110.html)
