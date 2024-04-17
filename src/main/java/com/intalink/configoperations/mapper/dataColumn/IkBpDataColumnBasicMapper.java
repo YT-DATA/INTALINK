@@ -27,6 +27,11 @@ public interface IkBpDataColumnBasicMapper extends BaseMapper<IkBpDataColumnBasi
     IkBpDataColumnBasic selectByTableIdAndColumnCode(@Param("dataTablelId") Integer dataTablelId,@Param("dataColumnCode") String columnCode);
 
     void deleteByDataTableId(@Param("dataTableIds") Integer[] dataTableIds);
+
+    List<IkBpDataColumnBasic> selectColumnBind(Integer dataTableId);
+
+    List<IkBpDataColumnBasic> selectRColumnBind(Integer dataTableId);
+
 }
 
 

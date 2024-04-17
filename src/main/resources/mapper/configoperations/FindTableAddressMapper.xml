@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intalink.configoperations.mapper.findTableAddress.FindTableAddressMapper">
+
+
+
+    <select id="findTableRelationList" resultType="java.util.Map">
+        SELECT LEAST(mainTable, relationTable) AS mainTable,
+               GREATEST(mainTable, relationTable) AS relationTable,
+               GROUP_CONCAT(relations SEPARATOR '?') AS merged_relations
+        FROM (
+                 SELECT tr.mainTable,
+                        tr.relationTable,
+                        GROUP_CONCAT(tr.relations SEPARATOR '?') AS relations
+                 FROM (
+                          SELECT CONCAT(rt.data_column_id,'-',rt.relation_data_column_id,':', rt.relation_str) AS relations,
+                                 t.data_table_id AS mainTable,
+                                 t1.data_table_id AS relationTable
+                          FROM ik_rp_data_table_relation rt
+                                   LEFT JOIN ik_bp_data_column_basic t ON rt.data_column_id = t.data_column_id
+                                   LEFT JOIN ik_bp_data_column_basic t1 ON rt.relation_data_column_id = t1.data_column_id
+                      ) tr
+                 GROUP BY tr.mainTable, tr.relationTable
+             ) merged
+        GROUP BY LEAST(mainTable, relationTable), GREATEST(mainTable, relationTable)
+    </select>
+    <insert id="insertLinkResult" parameterType="java.lang.String">
+        insert into ik_fp_link_result (link_connet) values( #{toJSONString})
+    </insert>
+    <select id="selectTableByColumnId" resultType="java.lang.String">
+        SELECT  data_table_id
+        FROM    ik_bp_data_column_basic
+                  where data_column_id = #{columnId}
+    </select>
+
+</mapper>

@@ -90,4 +90,30 @@
             AND is_del = 0
         </where>
     </select>
+    <select id="selectModelBind" resultType="com.intalink.configoperations.domain.model.IkBpDataModelBasic">
+        select
+            ibdmb.data_model_id,
+            ibdmb.data_model_code,
+            ibdmb.data_model_name,
+            ibdmb.data_model_remark,
+            ibdmb.is_del
+        from ik_rp_data_table_relation irdtr
+                 left join ik_bp_data_column_basic ibdcb on irdtr.data_column_id = ibdcb.data_column_id
+                 left join ik_bp_data_table_basic ibdtb on ibdcb.data_table_id = ibdtb.data_table_id
+                 left join ik_bp_data_model_basic ibdmb on ibdtb.data_model_id = ibdmb.data_model_id
+        where 1=1 and ibdcb.is_del = 0 group by ibdmb.data_model_id
+    </select>
+    <select id="selectRModelBind" resultType="com.intalink.configoperations.domain.model.IkBpDataModelBasic">
+        select
+            ibdmb.data_model_id,
+            ibdmb.data_model_code,
+            ibdmb.data_model_name,
+            ibdmb.data_model_remark,
+            ibdmb.is_del
+        from ik_rp_data_table_relation irdtr
+                 left join ik_bp_data_column_basic ibdcb on irdtr.relation_data_column_id = ibdcb.data_column_id
+                 left join ik_bp_data_table_basic ibdtb on ibdcb.data_table_id = ibdtb.data_table_id
+                 left join ik_bp_data_model_basic ibdmb on ibdtb.data_model_id = ibdmb.data_model_id
+        where 1=1 and ibdcb.is_del = 0 group by ibdmb.data_model_id
+    </select>
 </mapper>

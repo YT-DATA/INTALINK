@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intalink.configoperations.mapper.dataTableRelationBasic.IkBpDataTableRelationBasicMapper">
+
+    <resultMap id="BaseResultMap" type="com.intalink.configoperations.domain.dataTableRelationBasic.IkBpDataTableRelationBasic">
+            <id property="relationId" column="relation_id" jdbcType="INTEGER"/>
+            <result property="relationDescribe" column="relation_describe" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        relation_id,relation_type,relation_describe
+    </sql>
+
+    <select id="selectAll"
+            resultType="com.intalink.configoperations.domain.dataTableRelationBasic.IkBpDataTableRelationBasic">
+        select * from ik_bp_data_table_relation_basic group by relation_id
+    </select>
+
+</mapper>
