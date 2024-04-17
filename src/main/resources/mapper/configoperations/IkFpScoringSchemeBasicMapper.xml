@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intalink.configoperations.mapper.scoringScheme.IkFpScoringSchemeBasicMapper">
+
+    <resultMap id="BaseResultMap" type="com.intalink.configoperations.domain.scoringScheme.IkFpScoringSchemeBasic">
+            <id property="scoringSchemeId" column="scoring_scheme_id" jdbcType="INTEGER"/>
+            <result property="scoringSchemeName" column="scoring_scheme_name" jdbcType="VARCHAR"/>
+            <result property="scoringSchemeRemark" column="scoring_scheme_remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="scoringSchemeList">
+        select scoring_scheme_id,scoring_scheme_name,scoring_scheme_remark from ik_fp_scoring_scheme_basic
+    </sql>
+
+    <select id="selectByScoringSchemeName"
+            resultType="com.intalink.configoperations.domain.scoringScheme.vo.IkFpScoringSchemeBasicVo">
+        <include refid="scoringSchemeList"/>
+        <where>
+            <if test="scoringSchemeName != null and scoringSchemeName != ''">
+                AND scoring_scheme_name like #{scoringSchemeName}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectAllByIds"
+            resultType="com.intalink.configoperations.domain.scoringScheme.IkFpScoringSchemeBasic">
+        select * from ik_fp_scoring_scheme_basic where scoring_scheme_id in
+        <foreach item="item" index="index" collection="scoringSchemeIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <delete id="deleteBySSIds">
+    delete  from  ik_fp_scoring_scheme_basic where scoring_scheme_id in
+        <foreach item="item" index="index" collection="scoringSchemeIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

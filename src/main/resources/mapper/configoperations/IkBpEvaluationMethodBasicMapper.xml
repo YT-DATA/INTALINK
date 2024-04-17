@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intalink.configoperations.mapper.evaluationMethod.IkBpEvaluationMethodBasicMapper">
+
+    <resultMap id="BaseResultMap"
+               type="com.intalink.configoperations.domain.evaluationMethod.IkBpEvaluationMethodBasic">
+        <id property="evaluationMethodId" column="evaluation_method_id" jdbcType="INTEGER"/>
+        <result property="evaluationMethodName" column="evaluation_method_name" jdbcType="VARCHAR"/>
+        <result property="evaluationMethodRemark" column="evaluation_method_remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="evaluationMethodList">
+        select evaluation_method_id, evaluation_method_name, evaluation_method_remark
+        from ik_bp_evaluation_method_basic
+    </sql>
+    <delete id="deleteByIds">
+        delete from ik_bp_evaluation_method_basic
+        where evaluation_method_id in
+        <foreach item="item" index="index" collection="evaluationMethodIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectByEvaluationMethodName"
+            resultType="com.intalink.configoperations.domain.evaluationMethod.vo.IkBpEvaluationMethodBasicVo">
+        <include refid="evaluationMethodList"/>
+        <where>
+            <if test="evaluationMethodName != null and evaluationMethodName != ''">
+                AND evaluation_method_name like #{evaluationMethodName}
+            </if>
+        </where>
+    </select>
+    <select id="selectAllByIds"
+            resultType="com.intalink.configoperations.domain.evaluationMethod.IkBpEvaluationMethodBasic">
+        select * from ik_bp_evaluation_method_basic where evaluation_method_id in
+        <foreach item="item" index="index" collection="evaluationMethodIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectAll"
+            resultType="com.intalink.configoperations.domain.evaluationMethod.vo.IkBpEvaluationMethodBasicVo">
+        select * from ik_bp_evaluation_method_basic order by evaluation_method_name
+    </select>
+</mapper>

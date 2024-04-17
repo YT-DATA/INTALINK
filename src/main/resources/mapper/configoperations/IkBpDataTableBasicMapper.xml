@@ -154,6 +154,41 @@
             #{item}
         </foreach>
     </select>
-
+    <select id="selectTableBind"
+            resultType="com.intalink.configoperations.domain.dataTable.IkBpDataTableBasic">
+        select
+        ibdtb.data_table_id,
+        ibdtb.data_table_code,
+        ibdtb.data_table_name,
+        ibdtb.data_table_remark,
+        ibdtb.is_del
+        from ik_rp_data_table_relation irdtr
+        left join ik_bp_data_column_basic ibdcb on irdtr.data_column_id = ibdcb.data_column_id
+        left join ik_bp_data_table_basic ibdtb on ibdcb.data_table_id = ibdtb.data_table_id
+        left join ik_bp_data_model_basic ibdmb on ibdtb.data_model_id = ibdmb.data_model_id
+        where 1=1 and ibdcb.is_del = 0
+        <if test="dataModelId != null and dataModelId != ''">
+            AND ibdtb.data_model_id = #{dataModelId}
+        </if>
+        group by ibdtb.data_table_id
+    </select>
+    <select id="selectRTableBind"
+            resultType="com.intalink.configoperations.domain.dataTable.IkBpDataTableBasic">
+        select
+        ibdtb.data_table_id,
+        ibdtb.data_table_code,
+        ibdtb.data_table_name,
+        ibdtb.data_table_remark,
+        ibdtb.is_del
+        from ik_rp_data_table_relation irdtr
+        left join ik_bp_data_column_basic ibdcb on irdtr.relation_data_column_id = ibdcb.data_column_id
+        left join ik_bp_data_table_basic ibdtb on ibdcb.data_table_id = ibdtb.data_table_id
+        left join ik_bp_data_model_basic ibdmb on ibdtb.data_model_id = ibdmb.data_model_id
+        where 1=1 and ibdcb.is_del = 0
+        <if test="dataModelId != null and dataModelId != ''">
+            AND ibdtb.data_model_id = #{dataModelId}
+        </if>
+        group by ibdtb.data_table_id
+    </select>
 
 </mapper>

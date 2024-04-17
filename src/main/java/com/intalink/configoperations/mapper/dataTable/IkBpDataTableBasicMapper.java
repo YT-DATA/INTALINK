@@ -32,6 +32,10 @@ public interface IkBpDataTableBasicMapper extends BaseMapper<IkBpDataTableBasic>
     void deleteByDataModelId(@Param("dataModelIds") Integer[] dataModelIds);
 
     List<IkBpDataTableBasicVo> selectByModelIds(@Param("dataModelIds") Integer[] dataModelIds);
+
+    List<IkBpDataTableBasic> selectTableBind(Integer dataModelId);
+
+    List<IkBpDataTableBasic> selectRTableBind(Integer dataModelId);
 }
 
 

@@ -26,6 +26,10 @@ public interface IkBpDataModelBasicMapper extends BaseMapper<IkBpDataModelBasic>
     List<IkBpDataModelBasic> selectAll();
 
     void saveModel(IkBpDataModelBasic ikBpDataModelBasic);
+
+    List<IkBpDataModelBasic> selectModelBind();
+
+    List<IkBpDataModelBasic> selectRModelBind();
 }
 
 
