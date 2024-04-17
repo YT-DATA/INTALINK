@@ -1,116 +1,121 @@
-# INTALINK: 用私有化LLM技术定义数据库下一代交互方式
+# INTALINK: Data Integration and Intelligent Association Analysis Platform
+
+<p align="center">
+  <a href="https://github.com/yt-data/intalink/stargazers">
+    <img src="https://img.shields.io/github/stars/yt-data/intalink.svg?style=social&label=Stars" alt="GitHub stars"/>
+  </a>
+  <a href="https://github.com/yt-data?tab=followers">
+    <img src="https://img.shields.io/github/followers/yt-data.svg?style=social&label=Follow" alt="GitHub followers"/>
+  </a>
+  <a href="https://discord.gg/n53PxSrh">
+    <img src="https://img.shields.io/badge/INTALINK-Join%20intalink-blue.svg?style=social&logo=discord" alt="Join Discord"/>
+  </a>
+  <a href="your Stack Overflow link">
+    <img src="https://img.shields.io/badge/Stack%20Overflow-Ask%20intalink-orange.svg?style=social&logo=stack-overflow" alt="Stack Overflow"/>
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/YT-DATA/INTALINK/blob/main/README.zh.md">Chinese</a> |
+  <a href="https://discord.gg/n53PxSrh">Discord</a> |
+  <a href="https://www.yuque.com/chenshiyi-ur8az/tt35ml">Documentation</a> |
+  <a href="#contact-us">WeChat</a> |  
+  <a href="https://github.com/yt-data/community/blob/main/README.md">Community</a> |
+</p>
+
+## What is INTALINK?
+🤖️ INTALINK is an intelligent data integration tool that automatically identifies and builds relationships between data tables. It supports multi-source heterogeneous data environments, enabling users to easily perform data queries without needing to understand the underlying database logic, thus simplifying the multi-table data integration process.
+
+## Demo
+🔥🔥🔥 [INTALINK Open Source Demo 1.0.3](http://39.106.28.179/intalink/login?redirect=/index)
+
+![INTALINK Demo Image](https://github.com/yt-data/INTALINK/assets/162880729/f76d6a0e-2eb1-4dc9-9a6d-dff01ab9446d)
+
+## Table of Contents
+- [Architecture Solution](#architecture-solution)
+- [Installation](#installation)
+- [Feature Overview](#feature-overview)
+- [Contribution](#contribution)
+- [Contact Us](#contact-us)
+
+### Architecture Solution
+
+![INTALINK Architecture Image](https://github.com/yt-data/INTALINK/assets/162880729/efe18b27-5f78-475c-afe0-7c37cbf5f3d6)
+
+#### Core Capabilities include:
+- **Automatic Inter-table Relationship Generation**: Automatically detects and constructs relationships between two data tables, building a global data table topology based on foundational inter-table relationships.
+- **Automatic Query Statement Construction**: Users specify the needed data items, and the software generates the correct SQL query statements, intelligently incorporating intermediate tables for data association, thus avoiding the complexity of manual writing.
+- **Data Linkage Optimization Analysis**: Evaluates data linkage quality from multiple pathways, angles, and methods, and intelligently recommends optimized data query methods.
+- **Lowering Technical Barriers**: Reduces the need for data developers to engage in extensive business research and data resource organization, and decreases the workload for data operations personnel.
+- **Enhanced Data Governance**: Assists data managers in quickly identifying issues and making decisions, especially in dealing with data silo problems.
+- **Functionality Enhancement**: Upgrades existing software features, such as transforming manual analyses in BI tools into intelligent analyses, and automating data migration and query functions.
+
+### Installation
+
+Tutorials:
+- [Quick Start](https://www.yuque.com/chenshiyi-ur8az/tt35ml/biecgo4ey3w102nh)
+  - [Source Code Installation-v0.8](#feature-overview)
+- [User Manual-v0.8](https://www.yuque.com/chenshiyi-ur8az/tt35ml/vgk4qc60g1bb37v1)
+  - [Knowledge Base-v0.8](#feature-overview)
+  - [Data Dialogue-v0.8](#feature-overview)
+  - [Excel Dialogue-v0.8](#feature-overview)
+  - [Database Dialogue-v0.8](#feature-overview)
+- [Advanced Tutorial-v0.8](#feature-overview)
+  - [Intelligent Application Use-v0.8](#feature-overview)
+  - [Multi-model Management-v0.8](#feature-overview)
+  - [Command Line Use-v0.8](#feature-overview)
+- [Model Service Deployment-v0.8](#feature-overview)
+  - [Single Machine Deployment-v0.8](#feature-overview)
+  - [Cluster Deployment-v0.8](#feature-overview)
+- [How to Debug-v0.8](#feature-overview)
+- [AWEL-v0.8](#feature-overview)
+- [FAQ-v0.8](#feature-overview)
 
 
-<div align="center">
-  English | Discord | 文档 | 常见问题 | 社区 | Paper
-</div>
+### Feature Overview
 
-# INTALINK 是什么？
-🤖️Intalink是一个智能数据集成工具，它自动识别并构建数据表之间的关联关系，允许用户轻松执行数据查询，无需了解底层数据库逻辑，简化多表数据集成的过程。
+#### Intelligent Data Integration and Association Analysis
+- Achieves multi-table data integration, automatically identifying and constructing relationships between data tables.
+- Simplifies the complexity of needing intermediate tables for data association, automates query statement construction, such as SQL query generation based on relationships between multiple tables.
 
-# 效果演示
-🔥🔥🔥 [intalink开源演示1.0.3](http://39.106.28.179/intalink/login?redirect=/index)
+#### Data Association Engine
+- Provides automated, intelligent association logic for data integration applications through data analysis.
+- Supports intelligent integration across data table contents without requiring users to deeply understand business logic or database knowledge.
 
-![image](https://github.com/yt-data/INTALINK/assets/162880729/f76d6a0e-2eb1-4dc9-9a6d-dff01ab9446d)
+#### Self-service Data Exploration
+- Allows users to independently try and explore different data combinations, providing freedom in data application.
+- User-friendly interface, supporting data use as needed, reducing dependency on developers.
 
+#### Data Governance
+- Provides data association and governance tools for managers to identify data silos and execute data governance tasks.
+- Includes technical support to ensure data integrity and associability.
 
-# 目录
+#### Business Efficiency Improvement
+- Reduces the workload of data developers in business research and data resource organization.
+- Enables data operations and management personnel to quickly focus on issues, reducing technical support work.
 
-- [架构方案](#架构方案)
-- [安装](#安装)
-- [特性简介](#特性一览)
-- [贡献](#贡献)
-- [联系我们](#联系我们)
+#### Technology Upgrade and Compatibility
+- Supports open source and API proxy models, including integration of models such as LLaMA/LLaMA2, Baichuan, ChatGLM, and more.
+- Enhances existing software functionalities, including automated BI tool analysis and data warehouse migration.
 
+#### Data Privacy and Security
+- Utilizes private big models and proxy anonymization technologies to ensure privacy and security in data processing.
 
-# 架构方案
+#### Supported Data Sources
+- Provides natural language interaction capabilities with various data sources including Excel, databases, data warehouses, etc.
 
-![image](https://github.com/yt-data/INTALINK/assets/162880729/efe18b27-5f78-475c-afe0-7c37cbf5f3d6)
+### Contribution
 
-## 核心能力主要有以下几个部分:
-- 自动数据关联生成：自动探测和构建数据表之间的关系，支持复杂的多表查询，即使涉及中间表也能自动处理。
+#### For a more detailed contribution guide, please refer to [How to Contribute](https://github.com/yt-data/community/blob/main/README.md).
 
-- 查询语句自动构建：用户只需指明所需的数据项，软件即可生成正确的SQL查询语句，避免了手工编写的复杂性。
+This tool is complex and innovative for databases, and our project is in urgent development, with new features being released continuously. If you encounter any specific issues during use, please raise an issue under the project first. If necessary, contact the following WeChat, and I will do my best to help. We also warmly welcome everyone to participate in the project construction.
 
-- 数据应用自由化：提供了一个自助式的查询环境，允许用户灵活地尝试和探索不同的数据组合，实现数据的自主使用。
-
-- 降低技术门槛：数据开发人员不再需要繁琐的业务调研和数据资源梳理，而数据运维人员则减少了技术支持的工作量。
-
-- 增强数据治理：帮助数据管理人员快速识别问题和做出决策，尤其是在面对数据孤岛的问题时。
-
-- 功能增强：对现有软件功能进行升级，例如将BI工具中的手工分析转变为智能分析，以及自动化数据迁移和查询功能。
-
-
-
-
-
-# 安装
-
-教程
-- [快速开始](#测试套装)
-  - [源码安装](#测试套装)
-- [使用手册](#测试套装)
-  - [知识库](#测试套装)
-  - [数据对话](#测试套装)
-  - Excel对话
-  - 数据库对话
-- 进阶教程
-  - 智能应用使用
-  - 多模型管理
-  - 命令行使用
-- 模型服务部署
-  - 单机部署
-  - 集群部署
-- 如何Debug
-- AWEL
-- FAQ
-
-
-
-
-# 特性一览
-
-## 智能数据集成与关联分析
-- 实现多表数据集成，自动识别和构建数据表之间的关联关系。
-- 简化了需要中间表进行数据关联的复杂性，自动化构建查询语句，如基于多表间关系的SQL查询生成。
-
-## 数据关联引擎
-- 通过数据分析，自动化、智能化提供数据集成应用的关联逻辑。
-- 支持跨数据表内容的智能集成，无需用户深入理解业务逻辑或数据库知识。
-
-## 自助式数据探索
-- 允许用户自主尝试和探索不同的数据组合，提供数据应用的自由化。
-- 用户界面友好，支持按需使用数据，减少对开发人员依赖。
-
-## 数据治理
-- 为管理人员提供数据关联和治理工具，以判断数据孤岛并执行数据治理任务。
-- 数据管理部分包括保证数据完整性和可关联性的技术支持。
-
-## 业务效率提升
-- 为数据开发人员减少业务调研和数据资源整理的工作量。
-- 数据运维人员和管理人员可以快速聚焦问题，减少了技术支持工作。
-
-## 技术升级与兼容性
-- 支持开源和API代理模型，提供包括但不限于LLaMA/LLaMA2、Baichuan、ChatGLM等模型的集成。
-- 提升现有软件功能，包括自动化的BI工具分析和数据仓库迁移。
-
-## 数据隐私与安全
-- 采用私有化大模型和代理脱敏技术，确保数据处理的隐私安全。
-
-## 支持的数据源
-- 提供与Excel、数据库、数据仓等多种数据源的自然语言交互能力。
-
-# 贡献
-
-### 更加详细的贡献指南请参考[如何贡献](https://github.com/yt-data/community/blob/main/README.md)。
-
-这是一个用于数据库的复杂且创新的工具, 我们的项目也在紧急的开发当中, 会陆续发布一些新的feature。如在使用当中有任何具体问题, 优先在项目下提issue, 如有需要, 请联系如下微信，我会尽力提供帮助，同时也非常欢迎大家参与到项目建设中。
-
-## Licence
+### License
 
 Apache License 2.0
 
-# 联系我们
-微信：YT18526434675
-s
-[产品官网](https://www.idataops.com.cn/h-col-110.html)
+### Contact Us
+- WeChat: YT18526434675
+- ![企业微信](https://github.com/YT-DATA/INTALINK/assets/162880729/0f34328a-3d8a-4271-b199-96e7bc5e2ca6)
+
+- [Official Website](https://www.idataops.com.cn/h-col-110.html)
