@@ -118,24 +118,43 @@ public class IkRpDataTableRelationServiceImpl implements IkRpDataTableRelationSe
         return ikBpDataColumnBasics;
     }
 
+    /**
+     * 获取关联模型绑定信息
+     * @return
+     */
     @Override
     public List<IkBpDataModelBasic> selectRModelBind() {
         List<IkBpDataModelBasic> ikBpDataModelBasics = ikBpDataModelBasicMapper.selectRModelBind();
         return ikBpDataModelBasics;
     }
 
+    /**
+     * 获取关联数据表绑定信息
+     * @param dataModelId
+     * @return
+     */
     @Override
     public List<IkBpDataTableBasic> selectRTableBind(Integer dataModelId) {
         List<IkBpDataTableBasic> ikBpDataTableBasics = ikBpDataTableBasicMapper.selectRTableBind(dataModelId);
         return ikBpDataTableBasics;
     }
 
+    /**
+     * 获取关联数据项绑定信息
+     * @param dataTableId
+     * @return
+     */
     @Override
     public List<IkBpDataColumnBasic> selectRColumnBind(Integer dataTableId) {
         List<IkBpDataColumnBasic> ikBpDataColumnBasics = ikBpDataColumnBasicMapper.selectRColumnBind(dataTableId);
         return ikBpDataColumnBasics;
     }
 
+    /**
+     * 根据参数Ids删除信息
+     * @param dataTableRelationIds
+     * @return
+     */
     @Override
     public int deleteRelationBasicByIds(Integer[] dataTableRelationIds) {
         return ikRpDataTableRelationMapper.deleteRelationBasicByIds(dataTableRelationIds);
@@ -151,6 +170,12 @@ public class IkRpDataTableRelationServiceImpl implements IkRpDataTableRelationSe
         return ikBpDataTableRelationBasicMapper.selectAll();
     }
 
+    /**
+     * 新增或修改（true新增，false修改）
+     * @param ikRpDataTableRelationVos
+     * @param insertOrUpdate
+     * @return
+     */
     @Override
     public AjaxResult insertOrUpdate(List<IkRpDataTableRelationVo> ikRpDataTableRelationVos, Boolean insertOrUpdate) {
         if (insertOrUpdate) {

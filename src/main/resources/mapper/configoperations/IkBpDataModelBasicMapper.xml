@@ -47,7 +47,7 @@
          0)
     </insert>
 
-    <select id="selectDataSourceList"
+    <select id="selectataModelList"
             resultType="com.intalink.configoperations.domain.model.vo.IkBpDataModelBasicVo">
         select
         ibdmb.data_model_id,ibdmb.data_model_name,ibdmb.data_model_code,ibdmb.data_model_remark,ibdmb.is_del,

@@ -25,6 +25,11 @@ public class IkFpScoringSchemeBasicController extends BaseController {
     @Autowired
     private IkFpScoringSchemeBasicService ikFpScoringSchemeBasicService;
 
+    /**
+     * 获取列表
+     * @param ikFpScoringSchemeBasicVo
+     * @return
+     */
     @GetMapping("/lists")
     public TableDataInfo list(IkFpScoringSchemeBasicVo ikFpScoringSchemeBasicVo) {
         startPage();
@@ -44,7 +49,11 @@ public class IkFpScoringSchemeBasicController extends BaseController {
         return ikFpScoringSchemeBasicService.insertOrUpdate(ikFpScoringSchemeBasic,insertOrUpdate);
     }
 
-
+    /**
+     * 根据方案id获取评分权重
+     * @param scoringSchemeId
+     * @return
+     */
     @GetMapping("/scoringSchemeById")
     public AjaxResult scoringSchemeById(@RequestParam("scoringSchemeId") Integer scoringSchemeId) {
         List<IkFpEvaluationMethodWeightVo> lists = ikFpScoringSchemeBasicService.selectScoringSchemeById(scoringSchemeId);
@@ -52,7 +61,7 @@ public class IkFpScoringSchemeBasicController extends BaseController {
     }
 
     /**
-     * 新增或修改（true新增，false修改）
+     * 新增方案所绑定的方法及权重
      *
      * @param ikFpEvaluationMethodWeight
      * @param scoringSchemeId

@@ -8,7 +8,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 
+ * 数据项关联表
  * @TableName ik_rp_data_table_relation
  */
 @TableName(value ="ik_rp_data_table_relation")

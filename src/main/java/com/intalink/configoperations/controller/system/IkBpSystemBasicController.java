@@ -21,7 +21,11 @@ public class IkBpSystemBasicController extends BaseController {
     @Autowired
     private IkBpSystemBasicService ikBpSystemBasicService;
 
-
+    /**
+     * 获取列表
+     * @param ikBpSystemBasicVo
+     * @return
+     */
     @GetMapping("/lists")
     public TableDataInfo list(IkBpSystemBasicVo ikBpSystemBasicVo) {
         startPage();

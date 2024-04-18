@@ -97,6 +97,13 @@ public class IkBpDataColumnBasicController extends BaseController {
         util.importTemplateExcel(response, "数据项数据");
     }
 
+    /**
+     * 初始化分页
+     * @param list
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     public static List myStartPage(List list, Integer pageNum, Integer pageSize){
         if(list ==null){
             return null;
@@ -124,8 +131,12 @@ public class IkBpDataColumnBasicController extends BaseController {
         return pageList;
     }
 
+    /**
+     * 分页
+     * @param list
+     * @return
+     */
     public static TableDataInfo mySetPage(List list){
-
         PageDomain pageDomain = TableSupport.buildPageRequest();
         Integer pageNum = pageDomain.getPageNum();
         Integer pageSize = pageDomain.getPageSize();

@@ -26,6 +26,11 @@ public class IkFpScoringSchemeBasicServiceImpl implements IkFpScoringSchemeBasic
     @Autowired
     private IkFpEvaluationMethodWeightMapper ikFpEvaluationMethodWeightMapper;
 
+    /**
+     * 获取列表
+     * @param ikFpScoringSchemeBasicVo
+     * @return
+     */
     @Override
     public List<IkFpScoringSchemeBasicVo> selectScoringSchemeLists(IkFpScoringSchemeBasicVo ikFpScoringSchemeBasicVo) {
         String scoringSchemeName = "%%";
@@ -35,6 +40,12 @@ public class IkFpScoringSchemeBasicServiceImpl implements IkFpScoringSchemeBasic
         return ikFpScoringSchemeBasicMapper.selectByScoringSchemeName(scoringSchemeName);
     }
 
+    /**
+     * 新增或修改（true新增，false修改）
+     * @param ikFpScoringSchemeBasic
+     * @param insertOrUpdate
+     * @return
+     */
     @Override
     public AjaxResult insertOrUpdate(IkFpScoringSchemeBasic ikFpScoringSchemeBasic, Boolean insertOrUpdate) {
         if (getOne(ikFpScoringSchemeBasic)) {
@@ -48,6 +59,12 @@ public class IkFpScoringSchemeBasicServiceImpl implements IkFpScoringSchemeBasic
         }
     }
 
+    /**
+     * 根据方案id删除评分权重
+     * @param scoringSchemeIds
+     * @param sureOrNot
+     * @return
+     */
     @Override
     public AjaxResult deleteScoringSchemeBasicByIds(Integer[] scoringSchemeIds, Boolean sureOrNot) {
         if (sureOrNot) {
@@ -55,6 +72,9 @@ public class IkFpScoringSchemeBasicServiceImpl implements IkFpScoringSchemeBasic
             ikFpEvaluationMethodWeightMapper.deleteByIds(scoringSchemeIds);
             return AjaxResult.success();
         }
+        /**
+         * 根据评分方案id获取权重数据
+         */
         List<IkFpEvaluationMethodWeightVo> ikFpEvaluationMethodWeightVos = ikFpEvaluationMethodWeightMapper.selectBySSIds(scoringSchemeIds);
         if (ikFpEvaluationMethodWeightVos.size() > 0) {
             String data = "";
@@ -73,12 +93,23 @@ public class IkFpScoringSchemeBasicServiceImpl implements IkFpScoringSchemeBasic
         }
     }
 
+    /**
+     * 根据方案id获取评分权重
+     * @param scoringSchemeId
+     * @return
+     */
     @Override
     public List<IkFpEvaluationMethodWeightVo> selectScoringSchemeById(Integer scoringSchemeId) {
         List<IkFpEvaluationMethodWeightVo> ikFpScoringSchemeBasicVoList =  ikFpEvaluationMethodWeightMapper.selectScoringSchemeById(scoringSchemeId);
         return ikFpScoringSchemeBasicVoList;
     }
 
+    /**
+     * 新增方案所绑定的方法及权重
+     * @param ikFpEvaluationMethodWeight
+     * @param scoringSchemeId
+     * @return
+     */
     @Override
     public AjaxResult insert(List<IkFpEvaluationMethodWeight> ikFpEvaluationMethodWeight, Integer scoringSchemeId) {
         QueryWrapper<IkFpEvaluationMethodWeight> qw = new QueryWrapper<>();

@@ -45,13 +45,17 @@ public class IkBpDataModelBasicController extends BaseController {
         return mySetPage(lists);
     }
 
+    /**
+     * 查询全部
+     * @return
+     */
     @GetMapping(value = "/selectAll")
     public AjaxResult selectAll() {
         return success(ikBpDataModelBasicService.selectAll());
     }
 
     /**
-     * 根据模型Id获取书记表和项的信息
+     * 根据模型Id获取数据表和项的信息
      */
     @GetMapping(value = "/selectDataModelById/{dataModelIds}")
     public AjaxResult selectDataModelById(@PathVariable Integer[] dataModelIds) {

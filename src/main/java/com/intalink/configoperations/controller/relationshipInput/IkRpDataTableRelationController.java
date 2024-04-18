@@ -25,6 +25,11 @@ public class IkRpDataTableRelationController extends BaseController {
     @Autowired
     private IkRpDataTableRelationService ikRpDataTableRelationService;
 
+    /**
+     * 查询列表
+     * @param ikRpDataTableRelationVo
+     * @return
+     */
     @PostMapping("/lists")
     public TableDataInfo list(@RequestBody IkRpDataTableRelationVo ikRpDataTableRelationVo) {
         PageDomain pageDomain = TableSupport.buildPageRequest();
@@ -155,7 +160,14 @@ public class IkRpDataTableRelationController extends BaseController {
         return ikRpDataTableRelationService.insertOrUpdate(ikRpDataTableRelationVos, insertOrUpdate);
     }
 
-
+    /**
+     * 分页
+     *
+     * @param list
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     public static List myStartPage(List list, Integer pageNum, Integer pageSize) {
         if (list == null) {
             return null;
@@ -183,6 +195,13 @@ public class IkRpDataTableRelationController extends BaseController {
         return pageList;
     }
 
+    /**
+     * 分页
+     * @param list
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     public static TableDataInfo mySetPage(List list, Integer pageNum, Integer pageSize) {
         int num = list.size();
         list = (List) list.stream().skip((pageNum - 1) * pageSize).limit(pageSize).collect(Collectors.toList());

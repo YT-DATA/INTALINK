@@ -30,6 +30,11 @@ public class IkBpDataColumnBasicServiceImpl implements IkBpDataColumnBasicServic
     @Autowired
     private IkBpDataModelBasicMapper ikBpDataModelBasicMapper;
 
+    /**
+     * 查询列表
+     * @param ikBpDataColumnBasicVo
+     * @return
+     */
     @Override
     public List<IkBpDataColumnBasicVo> selectIkBpDataColumnBasicLists(IkBpDataColumnBasicVo ikBpDataColumnBasicVo) {
         String dataColumnName;
@@ -42,16 +47,30 @@ public class IkBpDataColumnBasicServiceImpl implements IkBpDataColumnBasicServic
         return ikBpDataColumnBasicMapper.selectDataColumnList(ikBpDataColumnBasicVo);
     }
 
+    /**
+     * 根据参数Id获取详细信息
+     * @param dataColumnId
+     * @return
+     */
     @Override
     public IkBpDataColumnBasic selectDataColumnBasicById(Integer dataColumnId) {
         return ikBpDataColumnBasicMapper.selectDataColumnById(dataColumnId);
     }
 
+    /**
+     * 根据参数Ids删除信息
+     * @param dataColumnIds
+     */
     @Override
     public void deleteDataColumnBasicByIds(Integer[] dataColumnIds) {
         ikBpDataColumnBasicMapper.deleteByDataColumnId(dataColumnIds);
     }
 
+    /**
+     * 插入/修改数据
+     * @param ikBpDataColumnBasic
+     * @return
+     */
     @Override
     @Transactional
     public int insertOrUpdate(IkBpDataColumnBasicVo ikBpDataColumnBasic) {
@@ -99,11 +118,23 @@ public class IkBpDataColumnBasicServiceImpl implements IkBpDataColumnBasicServic
         }
     }
 
+    /**
+     * 根据表id获取数据项数据
+     * @param dataTableId
+     * @return
+     */
     @Override
     public List<IkBpDataColumnBasic> selectDataColumnBasicByTableId(Integer dataTableId) {
         return ikBpDataColumnBasicMapper.selectDataColumnBasicByTableId(dataTableId);
     }
 
+    /**
+     * 导入数据项信息数据
+     * @param result
+     * @param dataModelId
+     * @param dataTableId
+     * @return
+     */
     @Override
     public Map<String, Object> columnImport(List<List<String>> result, Integer dataModelId, Integer dataTableId) {
         Map<String, Object> resultMap = new HashMap<>();
@@ -167,6 +198,11 @@ public class IkBpDataColumnBasicServiceImpl implements IkBpDataColumnBasicServic
         return resultMap;
     }
 
+    /**
+     * 新增/插入数据项信息
+     * @param ikBpDataColumnBasics
+     * @return
+     */
     public int insertOrUpdateList(List<IkBpDataColumnBasic> ikBpDataColumnBasics) {
         for (IkBpDataColumnBasic ikBpDataColumnBasic : ikBpDataColumnBasics) {
             if (ikBpDataColumnBasic.getDataColumnId() == null) {

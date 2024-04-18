@@ -6,6 +6,7 @@ import com.intalink.configoperations.domain.systemModelRelation.IkBpDataSourceDa
 /**
 * @author whx
 * @createDate 2024-03-19 16:04:51
+ * 数据系统对应模型mapper
 */
 public interface IkBpDataSourceDataModelRelationBasicMapper extends BaseMapper<IkBpDataSourceDataModelRelationBasic> {
 
