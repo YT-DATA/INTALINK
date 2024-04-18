@@ -91,6 +91,11 @@ public class IkBpDataColumnBasicController extends BaseController {
             return new AjaxResult(300, "部分数据已经存在", stringObjectMap);
     }
 
+    /**
+     * 导入数据项
+     * @param response
+     * @throws IOException
+     */
     @PostMapping("/importTemplate")
     public void importTemplate(HttpServletResponse response) throws IOException {
         ExcelUtil<IkBpDataColumnBasicVo> util = new ExcelUtil<IkBpDataColumnBasicVo>(IkBpDataColumnBasicVo.class);
