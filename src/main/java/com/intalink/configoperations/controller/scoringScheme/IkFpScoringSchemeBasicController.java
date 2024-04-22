@@ -76,10 +76,9 @@ public class IkFpScoringSchemeBasicController extends BaseController {
      * 根据参数Ids删除信息
      * sureOrNot true确认删除，false不删除
      */
-    @DeleteMapping(value = "/{scoringSchemeIds}")
-    public AjaxResult remove(@PathVariable Integer[] scoringSchemeIds,@RequestParam("sureOrNot") Boolean sureOrNot) {
+    @PostMapping(value = "/remove")
+    public AjaxResult remove(@RequestParam("scoringSchemeIds") Integer[] scoringSchemeIds,@RequestParam("sureOrNot") Boolean sureOrNot) {
         return ikFpScoringSchemeBasicService.deleteScoringSchemeBasicByIds(scoringSchemeIds,sureOrNot);
     }
-
 
 }

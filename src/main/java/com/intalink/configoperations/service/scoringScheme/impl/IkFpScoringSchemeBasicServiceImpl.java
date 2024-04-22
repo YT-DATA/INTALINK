@@ -12,7 +12,10 @@ import com.intalink.configoperations.service.scoringScheme.IkFpScoringSchemeBasi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author whx
@@ -72,9 +75,6 @@ public class IkFpScoringSchemeBasicServiceImpl implements IkFpScoringSchemeBasic
             ikFpEvaluationMethodWeightMapper.deleteByIds(scoringSchemeIds);
             return AjaxResult.success();
         }
-        /**
-         * 根据评分方案id获取权重数据
-         */
         List<IkFpEvaluationMethodWeightVo> ikFpEvaluationMethodWeightVos = ikFpEvaluationMethodWeightMapper.selectBySSIds(scoringSchemeIds);
         if (ikFpEvaluationMethodWeightVos.size() > 0) {
             String data = "";
@@ -85,7 +85,7 @@ public class IkFpScoringSchemeBasicServiceImpl implements IkFpScoringSchemeBasic
                     data = data + ikFpEvaluationMethodWeightVos.get(i).getScoringSchemeName() + "、";
                 }
             }
-            return AjaxResult.success(data + "与方法存在绑定关系,是否确认删除？");
+            return AjaxResult.error(506,data + "与方法存在绑定关系,是否确认删除？");
         } else {
             ikFpScoringSchemeBasicMapper.deleteBySSIds(scoringSchemeIds);
 //            ikFpEvaluationMethodWeightMapper.deleteByIds(scoringSchemeIds);
@@ -106,20 +106,34 @@ public class IkFpScoringSchemeBasicServiceImpl implements IkFpScoringSchemeBasic
 
     /**
      * 新增方案所绑定的方法及权重
-     * @param ikFpEvaluationMethodWeight
+     * @param ikFpEvaluationMethodWeights
      * @param scoringSchemeId
      * @return
      */
     @Override
-    public AjaxResult insert(List<IkFpEvaluationMethodWeight> ikFpEvaluationMethodWeight, Integer scoringSchemeId) {
-        QueryWrapper<IkFpEvaluationMethodWeight> qw = new QueryWrapper<>();
-        qw.eq("scoring_scheme_id",scoringSchemeId);
-        ikFpEvaluationMethodWeightMapper.delete(qw);
-        for (IkFpEvaluationMethodWeight fpEvaluationMethodWeight : ikFpEvaluationMethodWeight) {
-            fpEvaluationMethodWeight.setScoringSchemeId(scoringSchemeId);
-            ikFpEvaluationMethodWeightMapper.insert(fpEvaluationMethodWeight);
+    public AjaxResult insert(List<IkFpEvaluationMethodWeight> ikFpEvaluationMethodWeights, Integer scoringSchemeId) {
+        List<IkFpEvaluationMethodWeight> duplicateIkFpEvaluationMethodWeight = new ArrayList<>();
+        if (ikFpEvaluationMethodWeights.size() > 1) {
+            duplicateIkFpEvaluationMethodWeight = ikFpEvaluationMethodWeights.stream()
+                    .filter(ikFpEvaluationMethodWeight -> ikFpEvaluationMethodWeights != null && !ikFpEvaluationMethodWeights.isEmpty() &&
+                            ikFpEvaluationMethodWeights.stream()
+                                    .filter(s -> s != ikFpEvaluationMethodWeight)
+                                    .anyMatch(s -> Objects.equals(s.getEvaluationMethodId(), ikFpEvaluationMethodWeight.getEvaluationMethodId())))
+                    .distinct()
+                    .collect(Collectors.toList());
         }
-        return AjaxResult.success();
+        if (duplicateIkFpEvaluationMethodWeight.isEmpty()) {
+            QueryWrapper<IkFpEvaluationMethodWeight> qw = new QueryWrapper<>();
+            qw.eq("scoring_scheme_id", scoringSchemeId);
+            ikFpEvaluationMethodWeightMapper.delete(qw);
+            for (IkFpEvaluationMethodWeight fpEvaluationMethodWeight : ikFpEvaluationMethodWeights) {
+                fpEvaluationMethodWeight.setScoringSchemeId(scoringSchemeId);
+                ikFpEvaluationMethodWeightMapper.insert(fpEvaluationMethodWeight);
+            }
+            return AjaxResult.success();
+        } else {
+            return AjaxResult.error("一个方案中不能绑定相同的方法");
+        }
     }
 
     private Boolean getOne(IkFpScoringSchemeBasic ikFpScoringSchemeBasic) {
