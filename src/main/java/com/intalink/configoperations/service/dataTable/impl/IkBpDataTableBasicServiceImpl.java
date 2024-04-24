@@ -31,6 +31,11 @@ public class IkBpDataTableBasicServiceImpl implements IkBpDataTableBasicService 
     @Autowired
     private IkBpDataColumnBasicMapper ikBpDataColumnBasicMapper;
 
+    /**
+     * 查询列表
+     * @param ikBpDataTableBasicVo
+     * @return
+     */
     @Override
     public List<IkBpDataTableBasicVo> selectIkBpDataTableBasicLists(IkBpDataTableBasicVo ikBpDataTableBasicVo) {
         String dataTableName;
@@ -43,12 +48,21 @@ public class IkBpDataTableBasicServiceImpl implements IkBpDataTableBasicService 
         return ikBpDataTableBasicMapper.selectDataSourceList(ikBpDataTableBasicVo);
     }
 
+    /**
+     * 根据参数Ids删除信息
+     * @param dataTableIds
+     */
     @Override
     public void deleteDataTableBasicByIds(Integer[] dataTableIds) {
         ikBpDataTableBasicMapper.deleteByDataTableId(dataTableIds);
         ikBpDataColumnBasicMapper.deleteByDataTableId(dataTableIds);
     }
 
+    /**
+     * 插入/修改数据
+     * @param ikBpDataTableBasic
+     * @return
+     */
     @Override
     public AjaxResult insertOrUpdate(IkBpDataTableBasicVo ikBpDataTableBasic) {
         IkBpDataTableBasic ikBpDataTable = new IkBpDataTableBasic();
@@ -80,11 +94,22 @@ public class IkBpDataTableBasicServiceImpl implements IkBpDataTableBasicService 
         }
     }
 
+    /**
+     * 根据模型Id获取对应的数据表
+     * @param dataModelId
+     * @return
+     */
     @Override
     public List<IkBpDataTableBasic> selectDataTableBasicByModelId(Integer dataModelId) {
         return ikBpDataTableBasicMapper.selectDataTableBasicByModelId(dataModelId);
     }
 
+    /**
+     * 导入数据表信息数据
+     * @param result
+     * @param dataModelId
+     * @return
+     */
     @Override
     public Map<String, Object> tableImport(List<List<String>> result,Integer dataModelId) {
         Map<String, Object> resultMap = new HashMap<>();
@@ -147,6 +172,10 @@ public class IkBpDataTableBasicServiceImpl implements IkBpDataTableBasicService 
         return resultMap;
     }
 
+    /**
+     * 根据模型Id获取对应的数据表
+     * @return
+     */
     @Override
     public Integer count() {
         QueryWrapper<IkBpDataTableBasic> qw = new QueryWrapper<>();
@@ -154,6 +183,11 @@ public class IkBpDataTableBasicServiceImpl implements IkBpDataTableBasicService 
         return ikBpDataTableBasicMapper.selectCount(qw);
     }
 
+    /**
+     * 导入：新增或插入
+     * @param ikBpDataTableBasics
+     * @return
+     */
     public int insertOrUpdateList(List<IkBpDataTableBasic> ikBpDataTableBasics) {
         for (IkBpDataTableBasic ikBpDataTableBasic : ikBpDataTableBasics) {
             if (ikBpDataTableBasic.getDataTableId() == null) {

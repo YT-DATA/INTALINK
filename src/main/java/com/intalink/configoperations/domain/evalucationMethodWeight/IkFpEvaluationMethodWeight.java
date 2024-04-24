@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Data
 public class IkFpEvaluationMethodWeight implements Serializable {
     /**
-     * 主键
+     * 方案id
      */
     @TableId
     private Integer scoringSchemeId;

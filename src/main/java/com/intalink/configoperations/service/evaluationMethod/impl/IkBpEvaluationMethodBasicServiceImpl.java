@@ -23,6 +23,11 @@ public class IkBpEvaluationMethodBasicServiceImpl implements IkBpEvaluationMetho
     @Autowired
     private IkFpEvaluationMethodWeightMapper ikFpEvaluationMethodWeightMapper;
 
+    /**
+     * 获取列表
+     * @param ikBpEvaluationMethodBasicVo
+     * @return
+     */
     @Override
     public List<IkBpEvaluationMethodBasicVo> selectEvaluationMethodBasicLists(IkBpEvaluationMethodBasicVo ikBpEvaluationMethodBasicVo) {
         String evaluationMethodName = "%%";
@@ -32,6 +37,12 @@ public class IkBpEvaluationMethodBasicServiceImpl implements IkBpEvaluationMetho
         return ikBpEvaluationMethodBasicMapper.selectByEvaluationMethodName(evaluationMethodName);
     }
 
+    /**
+     * 新增或修改（true新增，false修改）
+     * @param ikBpEvaluationMethodBasic
+     * @param insertOrUpdate
+     * @return
+     */
     @Override
     public AjaxResult insertOrUpdate(IkBpEvaluationMethodBasic ikBpEvaluationMethodBasic, Boolean insertOrUpdate) {
         if (getOne(ikBpEvaluationMethodBasic)) {
@@ -46,6 +57,11 @@ public class IkBpEvaluationMethodBasicServiceImpl implements IkBpEvaluationMetho
         }
     }
 
+    /**
+     * 根据参数Ids删除信息
+     * @param evaluationMethodIds
+     * @return
+     */
     @Override
     public AjaxResult deleteEvaluationMethodBasicByIds(Integer[] evaluationMethodIds) {
         List<IkFpEvaluationMethodWeightVo> ikFpEvaluationMethodWeightVos = ikFpEvaluationMethodWeightMapper.selectByEMIds(evaluationMethodIds);
@@ -65,12 +81,20 @@ public class IkBpEvaluationMethodBasicServiceImpl implements IkBpEvaluationMetho
         }
     }
 
+    /**
+     * 查询全部
+     * @return
+     */
     @Override
     public List<IkBpEvaluationMethodBasicVo> selectAll() {
         return ikBpEvaluationMethodBasicMapper.selectAll();
     }
 
-
+    /**
+     * 根据评价方法获取对应数据
+     * @param ikBpEvaluationMethodBasic
+     * @return
+     */
     private Boolean getOne(IkBpEvaluationMethodBasic ikBpEvaluationMethodBasic) {
         QueryWrapper<IkBpEvaluationMethodBasic> qw = new QueryWrapper<>();
         qw.eq("evaluation_method_name", ikBpEvaluationMethodBasic.getEvaluationMethodName());

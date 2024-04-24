@@ -22,6 +22,11 @@ public class IkBpEvaluationMethodBasicController extends BaseController {
     @Autowired
     private IkBpEvaluationMethodBasicService ikBpEvaluationMethodBasicService;
 
+    /**
+     * 获取列表
+     * @param ikBpEvaluationMethodBasicVo
+     * @return
+     */
     @GetMapping("/lists")
     public TableDataInfo list(IkBpEvaluationMethodBasicVo ikBpEvaluationMethodBasicVo) {
         startPage();
@@ -41,6 +46,10 @@ public class IkBpEvaluationMethodBasicController extends BaseController {
         return ikBpEvaluationMethodBasicService.insertOrUpdate(ikBpEvaluationMethodBasic,insertOrUpdate);
     }
 
+    /**
+     * 查询全部
+     * @return
+     */
     @GetMapping("/selectAll")
     public AjaxResult selectAll() {
         List<IkBpEvaluationMethodBasicVo> lists = ikBpEvaluationMethodBasicService.selectAll();

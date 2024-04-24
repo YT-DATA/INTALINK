@@ -5,6 +5,7 @@ import com.intalink.configoperations.domain.dataSourceSystem.IkBpDataSourceSyste
 
 /**
 * @author whx
+ * 系统数据源关联mapper
 */
 public interface IkBpDataSourceSystemRelationBasicMapper extends BaseMapper<IkBpDataSourceSystemRelationBasic> {
 

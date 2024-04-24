@@ -21,6 +21,13 @@ public class PdmController extends BaseController {
     public PdmController() {
     }
 
+    /**
+     * pdm导入
+     * @param file
+     * @param modelId
+     * @return
+     * @throws Exception
+     */
     @PostMapping({"upload"})
     @ResponseBody
     public AjaxResult upload(@RequestParam MultipartFile file, @RequestParam String modelId) throws Exception {

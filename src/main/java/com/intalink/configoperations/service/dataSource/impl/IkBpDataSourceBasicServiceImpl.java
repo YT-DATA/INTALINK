@@ -19,6 +19,11 @@ public class IkBpDataSourceBasicServiceImpl implements IkBpDataSourceBasicServic
     @Autowired
     private IkBpDataSourceBasicMapper ikBpDataSourceBasicMapper;
 
+    /**
+     * 查询列表
+     * @param ikBpDataSourceBasic
+     * @return
+     */
     @Override
     public List<IkBpDataSourceBasic> selectIkBpDataSourceBasicLists(IkBpDataSourceBasicVo ikBpDataSourceBasic) {
         String dataSourceName;
@@ -37,6 +42,11 @@ public class IkBpDataSourceBasicServiceImpl implements IkBpDataSourceBasicServic
         return ikBpDataSourceBasicVos;
     }
 
+    /**
+     * 根据参数Id获取详细信息
+     * @param dataSourceId
+     * @return
+     */
     @Override
     public IkBpDataSourceBasic selectDataSourceBasicById(Integer dataSourceId) {
         IkBpDataSourceBasic ikBpDataSourceBasic = ikBpDataSourceBasicMapper.selectDataSourceById(dataSourceId);
@@ -46,11 +56,20 @@ public class IkBpDataSourceBasicServiceImpl implements IkBpDataSourceBasicServic
         return ikBpDataSourceBasic;
     }
 
+    /**
+     * 根据参数Ids删除信息
+     * @param dataSourceIds
+     */
     @Override
     public void deleteDataSourceBasicByIds(Integer[] dataSourceIds) {
         ikBpDataSourceBasicMapper.deleteByDataSourceId(dataSourceIds);
     }
 
+    /**
+     * 插入/修改数据
+     * @param ikBpDataSourceBasic
+     * @return
+     */
     @Override
     public int insertOrUpdate(IkBpDataSourceBasic ikBpDataSourceBasic) {
         String password = DESUtils.encrypt(ikBpDataSourceBasic.getPassword());
@@ -65,11 +84,19 @@ public class IkBpDataSourceBasicServiceImpl implements IkBpDataSourceBasicServic
         }
     }
 
+    /**
+     * 查询全部
+     * @return
+     */
     @Override
     public List<IkBpDataSourceBasic> selectAll() {
         return ikBpDataSourceBasicMapper.selectAll();
     }
 
+    /**
+     * 获取数据源数量
+     * @return
+     */
     @Override
     public Integer count() {
         QueryWrapper<IkBpDataSourceBasic> qw = new QueryWrapper<>();

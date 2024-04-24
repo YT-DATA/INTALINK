@@ -7,9 +7,13 @@ import java.util.List;
 
 /**
 * @author whx
+ * 关联关系基础mapper
 */
 public interface IkBpDataTableRelationBasicMapper extends BaseMapper<IkBpDataTableRelationBasic> {
-
+    /**
+     * 获取全部关联关系
+     * @return
+     */
     List<IkBpDataTableRelationBasic> selectAll();
 
 }

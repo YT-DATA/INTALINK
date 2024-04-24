@@ -29,6 +29,11 @@ public class IkBpDataModelBasicServiceImpl implements IkBpDataModelBasicService 
     @Autowired
     private IkBpDataColumnBasicMapper ikBpDataColumnBasicMapper;
 
+    /**
+     * 查询列表
+     * @param ikBpDataModelBasicVo
+     * @return
+     */
     @Override
     public List<IkBpDataModelBasicVo> selectIkBpDataTableBasicLists(IkBpDataModelBasicVo ikBpDataModelBasicVo) {
         String dataModelName;
@@ -38,7 +43,7 @@ public class IkBpDataModelBasicServiceImpl implements IkBpDataModelBasicService 
             dataModelName = "%" + ikBpDataModelBasicVo.getDataModelName() + "%";
         }
         ikBpDataModelBasicVo.setDataModelName(dataModelName);
-        List<IkBpDataModelBasicVo> ikBpDataModelBasics = ikBpDataModelBasicMapper.selectDataSourceList(ikBpDataModelBasicVo);
+        List<IkBpDataModelBasicVo> ikBpDataModelBasics = ikBpDataModelBasicMapper.selectataModelList(ikBpDataModelBasicVo);
         return ikBpDataModelBasics;
     }
 
@@ -47,6 +52,10 @@ public class IkBpDataModelBasicServiceImpl implements IkBpDataModelBasicService 
         return ikBpDataModelBasicMapper.selectDataModelById(dataModelIds);
     }
 
+    /**
+     * 根据参数Ids删除信息
+     * @param dataModelIds
+     */
     @Override
     public void deleteDataTableBasicByIds(Integer[] dataModelIds) {
         ikBpDataModelBasicMapper.deleteByDataTableId(dataModelIds);
@@ -63,6 +72,11 @@ public class IkBpDataModelBasicServiceImpl implements IkBpDataModelBasicService 
         }
     }
 
+    /**
+     * 插入/修改数据
+     * @param ikBpDataModelBasic
+     * @return
+     */
     @Override
     public int insertOrUpdate(IkBpDataModelBasic ikBpDataModelBasic) {
         if (ikBpDataModelBasic.getDataModelId() == null) {
@@ -76,6 +90,11 @@ public class IkBpDataModelBasicServiceImpl implements IkBpDataModelBasicService 
         }
     }
 
+    /**
+     * 导入模型信息数据
+     * @param result
+     * @return
+     */
     @Override
     public Map<String, Object> modelImport(List<List<String>> result) {
         Map<String, Object> resultMap = new HashMap<>();
@@ -145,11 +164,19 @@ public class IkBpDataModelBasicServiceImpl implements IkBpDataModelBasicService 
         return resultMap;
     }
 
+    /**
+     * 查询全部
+     * @return
+     */
     @Override
     public List<IkBpDataModelBasic> selectAll() {
         return ikBpDataModelBasicMapper.selectAll();
     }
 
+    /**
+     * 根据参数Ids删除信息
+     * @return
+     */
     @Override
     public Integer count() {
         QueryWrapper<IkBpDataModelBasic> qw = new QueryWrapper<>();
@@ -157,6 +184,11 @@ public class IkBpDataModelBasicServiceImpl implements IkBpDataModelBasicService 
         return ikBpDataModelBasicMapper.selectCount(qw);
     }
 
+    /**
+     * 新增或删除的公共方法
+     * @param ikBpDataModelBasics
+     * @return
+     */
     public int insertOrUpdateList(List<IkBpDataModelBasic> ikBpDataModelBasics) {
         for (IkBpDataModelBasic ikBpDataModelBasic : ikBpDataModelBasics) {
             if (ikBpDataModelBasic.getDataModelId() == null) {

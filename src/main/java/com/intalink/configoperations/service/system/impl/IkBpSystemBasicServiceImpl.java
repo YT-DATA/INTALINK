@@ -33,22 +33,41 @@ public class IkBpSystemBasicServiceImpl implements IkBpSystemBasicService {
     @Autowired
     private IkBpDataSourceDataModelRelationBasicMapper ikBpDataSourceDataModelRelationBasicMapper;
 
+    /**
+     * 获取列表
+     * @param ikBpSystemBasicVo
+     * @return
+     */
     @Override
     public List<IkBpSystemBasicVo> selectSystemBasicLists(IkBpSystemBasicVo ikBpSystemBasicVo) {
         return ikBpSystemBasicMapper.selectSystemBasicLists(ikBpSystemBasicVo);
     }
 
+    /**
+     * 根据参数Id获取详细信息
+     * @param systemId
+     * @return
+     */
     @Override
     public IkBpSystemBasic selectSystemBasicById(Integer systemId) {
         return ikBpSystemBasicMapper.selectSystemBasicById(systemId);
     }
 
+    /**
+     * 根据参数Ids删除信息
+     * @param systemIds
+     * @return
+     */
     @Override
     public int deleteSystemBasicByIds(Integer[] systemIds) {
         return ikBpSystemBasicMapper.deleteBysystemId(systemIds);
     }
 
-
+    /**
+     * 插入/修改数据
+     * @param ikBpSystemBasicVo
+     * @return
+     */
     @Override
     public AjaxResult insertOrUpdate(IkBpSystemBasicVo ikBpSystemBasicVo) {
         String insertOrUpdate = "update";
