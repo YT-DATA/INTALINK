@@ -36,7 +36,7 @@
 # 目录
 
 - [架构方案](#架构方案)
-- [安装](#安装)
+- [安装](#使用说明)
 - [特性简介](#特性一览)
 - [贡献](#贡献)
 - [联系我们](#联系我们)
@@ -65,11 +65,9 @@
 
 # 使用说明
 
-教程
 - [前言](https://github.com/YT-DATA/INTALINK/blob/main/document/Intalink%E5%89%8D%E8%A8%80.md)
-- [数据模型说明]
-  - [Intalink表结构说明](https://github.com/YT-DATA/INTALINK/blob/main/document/Intalink%E8%A1%A8%E7%BB%93%E6%9E%84%E8%AF%B4%E6%98%8E.md)
-  - [Intalink(开源版数据表结构)](https://github.com/YT-DATA/INTALINK/blob/main/document/Intalink(%E5%BC%80%E6%BA%90%E7%89%88%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%BB%93%E6%9E%84).md)
+- [Intalink表结构说明](https://github.com/YT-DATA/INTALINK/blob/main/document/Intalink%E8%A1%A8%E7%BB%93%E6%9E%84%E8%AF%B4%E6%98%8E.md)
+- [Intalink(开源版数据表结构)](https://github.com/YT-DATA/INTALINK/blob/main/document/Intalink(%E5%BC%80%E6%BA%90%E7%89%88%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%BB%93%E6%9E%84).md)
 - [数据关系表达式规则说明 ](https://github.com/YT-DATA/INTALINK/blob/main/document/%E6%95%B0%E6%8D%AE%E5%85%B3%E8%81%94%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%A7%84%E5%88%99%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3.md)
 - [Intalink接口调用方法](https://github.com/YT-DATA/INTALINK/blob/main/document/%E9%93%BE%E8%B7%AF%E6%8E%A5%E5%8F%A3%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.md)
 - [Intalink链路数据说明](https://github.com/YT-DATA/INTALINK/blob/main/document/Intalink%E9%93%BE%E8%B7%AF%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E.md)
