@@ -72,7 +72,7 @@
 - [Intalink接口调用方法](https://github.com/YT-DATA/INTALINK/blob/main/document/%E9%93%BE%E8%B7%AF%E6%8E%A5%E5%8F%A3%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.md)
 - [Intalink链路数据说明](https://github.com/YT-DATA/INTALINK/blob/main/document/Intalink%E9%93%BE%E8%B7%AF%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E.md)
 - [系统部署说明](https://github.com/YT-DATA/INTALINK/blob/main/document/intalink%E7%B3%BB%E7%BB%9F%E9%83%A8%E7%BD%B2%E8%AF%B4%E6%98%8E.md)
-- [演示录像](#特性一览)
+- [intalink核心能力视频-v0.8](#特性一览)
 
 
 
