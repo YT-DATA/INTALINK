@@ -1,4 +1,4 @@
-# INTALINK:数据集成与智能关联分析平台
+![image](https://github.com/YT-DATA/INTALINK/assets/162880729/2d2bcd58-9252-4522-9936-c83ffb63fa02)![image](https://github.com/YT-DATA/INTALINK/assets/162880729/bafc2e98-d51f-4d69-a937-e8d634bab287)# INTALINK:数据集成与智能关联分析平台
 
 
 <p align="center">
@@ -30,8 +30,7 @@
 # 效果演示
 🔥🔥🔥 [INTALINK开源演示1.0.3](http://39.106.28.179/intalink/login?redirect=/index)
 
-![image](https://github.com/yt-data/INTALINK/assets/162880729/f76d6a0e-2eb1-4dc9-9a6d-dff01ab9446d)
-
+![image](https://github.com/YT-DATA/INTALINK/assets/162880729/8bfc2bbb-4f93-41e8-a7a3-2732b874ac6c)
 
 # 目录
 
