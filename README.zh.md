@@ -1,4 +1,4 @@
-![image](https://github.com/YT-DATA/INTALINK/assets/162880729/2d2bcd58-9252-4522-9936-c83ffb63fa02)![image](https://github.com/YT-DATA/INTALINK/assets/162880729/bafc2e98-d51f-4d69-a937-e8d634bab287)# INTALINK:数据集成与智能关联分析平台
+# INTALINK:数据集成与智能关联分析平台
 
 
 <p align="center">
