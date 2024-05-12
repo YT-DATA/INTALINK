@@ -55,10 +55,10 @@
 - [Preface](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/IntalinkPreface.md)
 - [Intalink Table Structure Explanation](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Intalink%20Table%20Structure%20Explanation.md)
 - [Intalink (Open Source Edition Data Table Structure)](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Intalink%20(Open%20Source%20Edition%20Data%20Table%20Structure))
-- [Data Relationship Expression Rules Explanation](https://github.com/YT-DATA/INTALINK/blob/main/document/%E6%95%B0%E6%8D%AE%E5%85%B3%E8%81%94%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%A7%84%E5%88%99%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3.md)
-- [Intalink API Usage Methods](https://github.com/YT-DATA/INTALINK/blob/main/document/%E9%93%BE%E8%B7%AF%E6%8E%A5%E5%8F%A3%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.md)
-- [Intalink Link Data Explanation](https://github.com/YT-DATA/INTALINK/blob/main/document/Intalink%E9%93%BE%E8%B7%AF%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E.md)
-- [System Deployment Instructions](https://github.com/YT-DATA/INTALINK/blob/main/document/intalink%E7%B3%BB%E7%BB%9F%E9%83%A8%E7%BD%B2%E8%AF%B4%E6%98%8E.md)
+- [Data Relationship Expression Rules Explanation](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Data%20Relationship%20Expression%20Rules%20Explanation.md)
+- [Intalink API Usage Methods](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Intalink%20API%20Usage%20Methods.md)
+- [Intalink Link Data Explanation](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Intalink%20Link%20Data%20Explanation.md)
+- [System Deployment Instructions](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/System%20Deployment%20Instructions.md)
 - [Intalink Core Capability Video - v0.8](#feature-overview)
 
 
