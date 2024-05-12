@@ -1,0 +1,72 @@
+Cinderella Database Tables Overview
+This document provides a detailed overview of the database tables used in the Cinderella system. These tables are essential for defining, storing, and evaluating data link generation methods, data applications, and model interactions within the system.
+
+Basic Definitions and Logs
+ik_bp_generating_methods_basic (链路生成方法表)
+
+Description: Stores the definitions of data link generation methods. Users must implement these methods at the code level.
+ik_bp_apply_for_basic (数据申请日志)
+
+Description: Stores user data application logs, including the source and content of the requests. Application content is stored in JSON format.
+ik_bp_data_column_basic (数据列基础信息)
+
+Description: Stores basic information about data columns within data tables. These columns are foundational for user application information.
+ik_bp_data_model_basic (数据模型表)
+
+Description: Stores the definitions of data models, which are fundamental for data intelligence modeling.
+ik_bp_data_source_basic (数据源信息表)
+
+Description: Stores information about data sources, which serve as the basis for extracting data models and data post intelligent link generation.
+ik_bp_data_source_data_model_relation_basic (系统模型关联表)
+
+Description: Stores system information to facilitate subsequent business operations, such as extracting specific fields from data tables under certain systems as key display items.
+ik_bp_data_source_system_relation_basic (系统数据源关联表)
+
+Description: Stores the association information between systems and data sources, facilitating subsequent data extraction.
+Table and Relationship Information
+ik_bp_data_table_basic (数据表信息)
+
+Description: Stores information about data tables under data models.
+ik_bp_data_table_relation_basic (关联关系基础表)
+
+Description: Stores the definitions of data relationships, used in data relationship exploration based on these definitions.
+ik_bp_dictionary_dic (字典表)
+
+Description: Stores system dictionary information, a fundamental system table.
+ik_bp_evaluation_method_basic (评价方法表)
+
+Description: Stores definitions of methods for evaluating generated links.
+ik_bp_result_type_basic (输出方式表)
+
+Description: Stores basic information about output methods.
+ik_bp_sys_setting (系统配置表)
+
+Description: Stores system configuration information.
+ik_bp_system_basic (系统信息表)
+
+Description: Stores system information.
+Results and Evaluation
+ik_fp_better_link_result (优选链路结果)
+
+Description: Stores the data links generated and scored using evaluation methods, selecting the best links.
+ik_fp_better_result (优选输出结果)
+
+Description: Stores the optimized output information of generated links after selection.
+ik_fp_evaluation_method_weight (评分权重)
+
+Description: Stores the scoring weights for user evaluation methods.
+ik_fp_link_result (数据链路表)
+
+Description: Stores the generated data links.
+ik_fp_link_weight_count_result (链路权重系数计算结果)
+
+Description: Stores the link weight coefficients and their calculation results.
+ik_fp_score_result (不同评分方法评分结果表)
+
+Description: Stores the scoring results of generated links using different scoring methods.
+ik_fp_scoring_scheme_basic (评分方案表)
+
+Description: Stores the scoring schemes for links.
+ik_rp_data_table_relation (表间关系存储表)
+
+Description: Stores the relationships between tables under a data model, a core system information table.
