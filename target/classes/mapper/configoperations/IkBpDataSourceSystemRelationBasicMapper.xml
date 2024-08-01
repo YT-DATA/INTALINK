@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intalink.configoperations.mapper.dataSourceSystem.IkBpDataSourceSystemRelationBasicMapper">
+
+    <resultMap id="DataSourceSystemRelationResultMap" type="com.intalink.configoperations.domain.dataSourceSystem.IkBpDataSourceSystemRelationBasic">
+            <id property="dataSourceSystemRelationId" column="data_source_system_relation_id" jdbcType="INTEGER"/>
+            <result property="datasourceId" column="datasource_id" jdbcType="INTEGER"/>
+            <result property="systemId" column="system_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="DataSourceSystemRelationList">
+        select data_source_system_relation_id,datasource_id,system_id from ik_bp_data_source_system_relation_basic
+    </sql>
+
+</mapper>

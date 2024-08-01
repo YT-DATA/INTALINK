@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intalink.configoperations.mapper.dataTable.IkBpDataTableBasicMapper">
+
+    <resultMap id="DataTableResultMap" type="com.intalink.configoperations.domain.dataTable.IkBpDataTableBasic">
+        <id property="dataTableId" column="data_table_id" jdbcType="INTEGER"/>
+        <result property="dataModelId" column="data_model_id" jdbcType="INTEGER"/>
+        <result property="dataTableCode" column="data_table_code" jdbcType="VARCHAR"/>
+        <result property="dataTableName" column="data_table_name" jdbcType="VARCHAR"/>
+        <result property="dataTableRemark" column="data_table_remark" jdbcType="VARCHAR"/>
+        <result property="isDel" column="is_del" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="DataTableList">
+        select data_table_id, data_model_id, data_table_code, data_table_name, data_table_remark, is_del
+        from ik_bp_data_table_basic
+    </sql>
+
+<!--    <insert id="saveTables" useGeneratedKeys="true" >-->
+<!--        insert into ik_bp_data_table_basic (data_model_id,data_table_code,data_table_name,is_del)-->
+<!--        values-->
+<!--        <foreach collection="list" index="index" item="item" separator=",">-->
+<!--            (#{item.dataModelId},-->
+<!--            #{item.dataTableCode,jdbcType=VARCHAR},-->
+<!--            #{item.dataTableName,jdbcType=VARCHAR},-->
+<!--            0)-->
+<!--        </foreach>-->
+<!--    </insert>-->
+
+    <insert id="saveTables" parameterType="com.intalink.configoperations.domain.dataTable.IkBpDataTableBasic" useGeneratedKeys="true" keyProperty="dataTableId">
+        insert into ik_bp_data_table_basic (data_model_id,data_table_code,data_table_name,is_del)
+        values
+            (#{dataModelId},
+            #{dataTableCode,jdbcType=VARCHAR},
+            #{dataTableName,jdbcType=VARCHAR},
+            0)
+    </insert>
+
+    <update id="deleteByDataTableId" parameterType="com.intalink.configoperations.domain.dataTable.IkBpDataTableBasic">
+        UPDATE ik_bp_data_table_basic
+        SET is_del = 1
+        WHERE data_table_id IN
+        <foreach item="item" index="index" collection="dataTableIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <delete id="deleteNullTableByModelId">
+        delete
+        from ik_bp_data_table_basic
+        where data_table_id
+            not in (select distinct data_table_id from ik_bp_data_column_basic)
+          and data_model_id = #{modelId,jdbcType=VARCHAR}
+    </delete>
+    <update id="deleteByDataModelId">
+        UPDATE ik_bp_data_table_basic
+        SET is_del = 1
+        WHERE data_model_id IN
+        <foreach item="item" index="index" collection="dataModelIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectDataSourceList"
+            resultType="com.intalink.configoperations.domain.dataTable.vo.IkBpDataTableBasicVo">
+        select
+        ibdtb.data_table_id dataTableId,
+        ibdtb.data_model_id dataModelId,
+        ibdtb.data_table_code dataTableCode,
+        ibdtb.data_table_name dataTableName,
+        ibdtb.data_table_remark dataTableRemark,
+        ibdmb.data_model_name dataModelName,
+        count(ibdcb.data_column_id) columnCount
+        from ik_bp_data_table_basic ibdtb
+        left join ik_bp_data_model_basic ibdmb on ibdmb.data_model_id = ibdtb.data_model_id
+        left join ik_bp_data_column_basic ibdcb on ibdtb.data_table_id = ibdcb.data_table_id
+        where 1=1
+        <if test="dataTableName != null and dataTableName != ''">
+            AND (LOWER(ibdtb.data_table_name) like LOWER(#{dataTableName}) OR LOWER(ibdtb.data_table_code) like
+            LOWER(#{dataTableName}))
+        </if>
+        <if test="dataModelId != null and dataModelId != ''">
+            AND ibdtb.data_model_id = #{dataModelId}
+        </if>
+        AND (ibdtb.is_del = 0 OR ibdcb.is_del = 0)
+        group by ibdtb.data_table_id
+        order by ibdmb.data_model_name DESC
+    </select>
+
+
+    <select id="selectDataTableBasicByModelId"
+            resultType="com.intalink.configoperations.domain.dataTable.IkBpDataTableBasic">
+        select
+        ibdtb.data_table_id dataTableId,
+        ibdtb.data_model_id dataModelId,
+        ibdtb.data_table_code dataTableCode,
+        ibdtb.data_table_name dataTableName,
+        ibdtb.data_table_remark dataTableRemark,
+        ibdmb.data_model_name dataModelName
+        from ik_bp_data_table_basic ibdtb
+        left join ik_bp_data_model_basic ibdmb on ibdmb.data_model_id = ibdtb.data_model_id
+        where
+            1=1
+            <if test="dataModelId != null and dataModelId != ''">
+                AND ibdtb.data_model_id = #{dataModelId}
+            </if>
+            AND ibdtb.is_del = 0 and ibdmb.is_del = 0
+    </select>
+
+    <select id="selectByModelIdAndTableCode"
+            resultType="com.intalink.configoperations.domain.dataTable.IkBpDataTableBasic">
+        <include refid="DataTableList"/>
+        <where>
+            <if test="dataModelId != null and dataModelId != ''">
+                AND data_model_id = #{dataModelId}
+            </if>
+
+            <if test="dataTableCode != null and dataTableCode != ''">
+                AND data_table_code = #{dataTableCode}
+            </if>
+        </where>
+    </select>
+    <select id="selectByTableName"
+            resultType="com.intalink.configoperations.domain.dataTable.IkBpDataTableBasic">
+        select
+        ibdtb.data_table_id dataTableId,
+        ibdtb.data_model_id dataModelId,
+        ibdtb.data_table_code dataTableCode,
+        ibdtb.data_table_name dataTableName,
+        ibdtb.data_table_remark dataTableRemark
+        from ik_bp_data_table_basic ibdtb
+        where 1=1
+            <if test="dataTableName != null and dataTableName != ''">
+                AND (data_table_name = #{dataTableName} OR data_table_code = #{dataTableName})
+            </if>
+            <if test="dataModelId != null and dataModelId != ''">
+                AND data_model_id = #{dataModelId}
+            </if>
+    </select>
+    <select id="selectByModelIds"
+            resultType="com.intalink.configoperations.domain.dataTable.vo.IkBpDataTableBasicVo">
+        select
+        ibdtb.data_table_id dataTableId,
+        ibdtb.data_model_id dataModelId,
+        ibdtb.data_table_code dataTableCode,
+        ibdtb.data_table_name dataTableName,
+        ibdtb.data_table_remark dataTableRemark
+        from ik_bp_data_table_basic ibdtb
+        where 1=1
+        AND ibdtb.data_model_id IN
+        <foreach item="item" index="index" collection="dataModelIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectTableBind"
+            resultType="com.intalink.configoperations.domain.dataTable.IkBpDataTableBasic">
+        select
+        ibdtb.data_table_id,
+        ibdtb.data_table_code,
+        ibdtb.data_table_name,
+        ibdtb.data_table_remark,
+        ibdtb.is_del
+        from ik_rp_data_table_relation irdtr
+        left join ik_bp_data_column_basic ibdcb on irdtr.data_column_id = ibdcb.data_column_id
+        left join ik_bp_data_table_basic ibdtb on ibdcb.data_table_id = ibdtb.data_table_id
+        left join ik_bp_data_model_basic ibdmb on ibdtb.data_model_id = ibdmb.data_model_id
+        where 1=1 and ibdcb.is_del = 0
+        <if test="dataModelId != null and dataModelId != ''">
+            AND ibdtb.data_model_id = #{dataModelId}
+        </if>
+        group by ibdtb.data_table_id
+    </select>
+    <select id="selectRTableBind"
+            resultType="com.intalink.configoperations.domain.dataTable.IkBpDataTableBasic">
+        select
+        ibdtb.data_table_id,
+        ibdtb.data_table_code,
+        ibdtb.data_table_name,
+        ibdtb.data_table_remark,
+        ibdtb.is_del
+        from ik_rp_data_table_relation irdtr
+        left join ik_bp_data_column_basic ibdcb on irdtr.relation_data_column_id = ibdcb.data_column_id
+        left join ik_bp_data_table_basic ibdtb on ibdcb.data_table_id = ibdtb.data_table_id
+        left join ik_bp_data_model_basic ibdmb on ibdtb.data_model_id = ibdmb.data_model_id
+        where 1=1 and ibdcb.is_del = 0
+        <if test="dataModelId != null and dataModelId != ''">
+            AND ibdtb.data_model_id = #{dataModelId}
+        </if>
+        group by ibdtb.data_table_id
+    </select>
+
+</mapper>

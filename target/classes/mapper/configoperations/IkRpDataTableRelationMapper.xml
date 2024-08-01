@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intalink.configoperations.mapper.relationshipInput.IkRpDataTableRelationMapper">
+
+    <resultMap id="BaseResultMap" type="com.intalink.configoperations.domain.relationshipInput.IkRpDataTableRelation">
+            <result property="dataTableRelationId" column="data_table_relation_id" jdbcType="INTEGER"/>
+            <result property="dataColumnId" column="data_column_id" jdbcType="INTEGER"/>
+            <result property="relationDataColumnId" column="relation_data_column_id" jdbcType="INTEGER"/>
+            <result property="relationType" column="relation_type" jdbcType="INTEGER"/>
+            <result property="relationStr" column="relation_str" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        data_column_id,relation_data_column_id,relation_type,relation_str
+    </sql>
+
+    <insert id="insertAll">
+        insert into ik_rp_data_table_relation (data_column_id,relation_data_column_id,relation_type,relation_str)
+        <foreach collection="list" item="item" index="index" separator="union all">
+            select
+            #{item.dataColumnId,jdbcType=VARCHAR},
+            #{item.relationDataColumnId,jdbcType=VARCHAR},
+            #{item.relationType,jdbcType=VARCHAR},
+            #{item.relationStr,jdbcType=VARCHAR}
+        </foreach>
+    </insert>
+
+    <select id="selectListByData" parameterType="com.intalink.configoperations.domain.relationshipInput.vo.IkRpDataTableRelationVo"
+            resultType="com.intalink.configoperations.domain.relationshipInput.vo.IkRpDataTableRelationVo">
+        select
+            concat(ibdmb.data_model_code,if(ibdmb.data_model_name is null ,'',concat('(',ibdmb.data_model_name,')')),'-'
+                ,ibdtb.data_table_code,if(ibdtb.data_table_name is null ,'',concat('(',ibdtb.data_table_name,')')),'-'
+                ,ibdcb.data_column_code,if(ibdcb.data_column_name is null ,'',concat('(',ibdcb.data_column_name,')'))
+                )  dataModelTableColumn,
+            concat(ibdmb1.data_model_code,if(ibdmb1.data_model_name is null ,'',concat('(',ibdmb1.data_model_name,')')),'-'
+                ,ibdtb1.data_table_code,if(ibdtb1.data_table_name is null ,'',concat('(',ibdtb1.data_table_name,')')),'-'
+                ,ibdcb1.data_column_code,if(ibdcb1.data_column_name is null ,'',concat('(',ibdcb1.data_column_name,')'))
+                )  relationDataModelTableColumn,
+            irdtr.data_column_id dataColumnId,
+            ibdcb.data_column_code dataColumnCode,
+            irdtr.relation_data_column_id relationDataColumnId,
+            ibdcb1.data_column_code relationDataColumnCode,
+            ibdtb.data_table_id dataTableId,
+            ibdtb.data_table_code dataTableCode,
+            ibdtb1.data_table_id relationDataTableId,
+            ibdtb1.data_table_code relationDataTableCode,
+            ibdmb.data_model_id dataModelId,
+            ibdmb.data_model_code dataModelCode,
+            ibdmb1.data_model_id relationDataModelId,
+            ibdmb1.data_model_code relationDataModelCode,
+            irdtr.relation_type relationType,
+            irdtr.relation_str relationStr,
+            irdtr.data_table_relation_id dataTableRelationId
+        from ik_rp_data_table_relation irdtr
+                 left join ik_bp_data_column_basic ibdcb on irdtr.data_column_id = ibdcb.data_column_id
+                 left join ik_bp_data_column_basic ibdcb1 on irdtr.relation_data_column_id = ibdcb1.data_column_id
+                 left join ik_bp_data_table_basic ibdtb on ibdcb.data_table_id = ibdtb.data_table_id
+                 left join ik_bp_data_table_basic ibdtb1 on ibdcb1.data_table_id = ibdtb1.data_table_id
+                 left join ik_bp_data_model_basic ibdmb on ibdtb.data_model_id = ibdmb.data_model_id
+                 left join ik_bp_data_model_basic ibdmb1 on ibdtb1.data_model_id = ibdmb1.data_model_id
+        where 1=1
+        <if test="dataColumnId != null and dataColumnId != ''">
+            and irdtr.data_column_id = #{dataColumnId}
+        </if>
+        <if test="relationDataColumnId != null and relationDataColumnId != ''">
+        and irdtr.relation_data_column_id = #{relationDataColumnId}
+        </if>
+        <if test="dataTableId != null and dataTableId != ''">
+        and ibdtb.data_table_id = #{dataTableId}
+        </if>
+        <if test="relationDataTableId != null and relationDataTableId != ''">
+        and ibdtb1.data_table_id = #{relationDataTableId}
+        </if>
+        <if test="dataModelId != null and dataModelId != ''">
+        and ibdmb.data_model_id = #{dataModelId}
+        </if>
+        <if test="relationDataModelId != null and relationDataModelId != ''">
+        and ibdmb1.data_model_id = #{relationDataModelId}
+        </if>
+        <if test="relationType != null and relationType != ''">
+        and irdtr.relation_type = #{relationType}
+        </if>
+        and ibdcb.is_del = 0 and ibdcb1.is_del = 0
+        order by irdtr.data_column_id,irdtr.relation_data_column_id
+    </select>
+
+    <delete id="deleteRelationBasicByIds">
+        delete from ik_rp_data_table_relation
+        where data_table_relation_id in
+        <foreach item="item" index="index" collection="dataTableRelationIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>
