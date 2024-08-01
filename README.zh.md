@@ -30,13 +30,12 @@
 # 效果演示
 🔥🔥🔥 [INTALINK开源演示1.0.3](http://39.106.28.179/intalink/login?redirect=/index)
 
-![image](https://github.com/yt-data/INTALINK/assets/162880729/f76d6a0e-2eb1-4dc9-9a6d-dff01ab9446d)
-
+![image](https://github.com/YT-DATA/INTALINK/assets/162880729/8bfc2bbb-4f93-41e8-a7a3-2732b874ac6c)
 
 # 目录
 
 - [架构方案](#架构方案)
-- [安装](#安装)
+- [安装](#使用说明)
 - [特性简介](#特性一览)
 - [贡献](#贡献)
 - [联系我们](#联系我们)
@@ -63,26 +62,16 @@
 
 
 
-# 安装
+# 使用说明
 
-教程
-- [快速开始](https://www.yuque.com/chenshiyi-ur8az/tt35ml/biecgo4ey3w102nh)
-  - [源码安装-v0.8](#特性一览)
-- [使用手册-v0.8](https://www.yuque.com/chenshiyi-ur8az/tt35ml/vgk4qc60g1bb37v1)
-  - [知识库-v0.8](#特性一览)
-  - [数据对话-v0.8](#特性一览)
-  - [Excel对话-v0.8](#特性一览)
-  -[数据库对话-v0.8](#特性一览)
-- [进阶教程-v0.8](#特性一览)
-  - [智能应用使用-v0.8](#特性一览)
-  - [多模型管理-v0.8](#特性一览)
-  - [命令行使用-v0.8](#特性一览)
-- [模型服务部署-v0.8](#特性一览)
-  - [单机部署-v0.8](#特性一览)
-  - [集群部署-v0.8](#特性一览)
-- [如何Debug-v0.8](#特性一览)
-- [AWEL-v0.8](#特性一览)
-- [FAQ-v0.8](#特性一览)
+- [前言](https://github.com/YT-DATA/INTALINK/blob/main/document/Intalink%E5%89%8D%E8%A8%80.md)
+- [Intalink表结构说明](https://github.com/YT-DATA/INTALINK/blob/main/document/Intalink%E8%A1%A8%E7%BB%93%E6%9E%84%E8%AF%B4%E6%98%8E.md)
+- [Intalink(开源版数据表结构)](https://github.com/YT-DATA/INTALINK/blob/main/document/Intalink(%E5%BC%80%E6%BA%90%E7%89%88%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%BB%93%E6%9E%84).md)
+- [数据关系表达式规则说明 ](https://github.com/YT-DATA/INTALINK/blob/main/document/%E6%95%B0%E6%8D%AE%E5%85%B3%E8%81%94%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%A7%84%E5%88%99%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3.md)
+- [Intalink接口调用方法](https://github.com/YT-DATA/INTALINK/blob/main/document/%E9%93%BE%E8%B7%AF%E6%8E%A5%E5%8F%A3%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.md)
+- [Intalink链路数据说明](https://github.com/YT-DATA/INTALINK/blob/main/document/Intalink%E9%93%BE%E8%B7%AF%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E.md)
+- [系统部署说明](https://github.com/YT-DATA/INTALINK/blob/main/document/intalink%E7%B3%BB%E7%BB%9F%E9%83%A8%E7%BD%B2%E8%AF%B4%E6%98%8E.md)
+- [intalink核心能力视频-v0.8](#特性一览)
 
 
 
@@ -130,7 +119,6 @@
 Apache License 2.0
 
 # 联系我们
-- 微信：YT18526434675
 - ![企业微信](https://github.com/YT-DATA/INTALINK/assets/162880729/1c739c36-160c-474d-9f9b-c43e46dd1159)
 
 

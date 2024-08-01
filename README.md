@@ -29,11 +29,11 @@
 ## Demo
 🔥🔥🔥 [INTALINK Open Source Demo 1.0.3](http://39.106.28.179/intalink/login?redirect=/index)
 
-![INTALINK Demo Image](https://github.com/yt-data/INTALINK/assets/162880729/f76d6a0e-2eb1-4dc9-9a6d-dff01ab9446d)
+![INTALINK Demo Image](https://github.com/YT-DATA/INTALINK/assets/162880729/c297361b-caee-4b73-8e59-20ba01eec4eb)
 
 ## Table of Contents
 - [Architecture Solution](#architecture-solution)
-- [Installation](#installation)
+- [instruction](#instruction)
 - [Feature Overview](#feature-overview)
 - [Contribution](#contribution)
 - [Contact Us](#contact-us)
@@ -50,26 +50,16 @@
 - **Enhanced Data Governance**: Assists data managers in quickly identifying issues and making decisions, especially in dealing with data silo problems.
 - **Functionality Enhancement**: Upgrades existing software features, such as transforming manual analyses in BI tools into intelligent analyses, and automating data migration and query functions.
 
-### Installation
+### instruction
 
-Tutorials:
-- [Quick Start](https://www.yuque.com/chenshiyi-ur8az/tt35ml/biecgo4ey3w102nh)
-  - [Source Code Installation-v0.8](#feature-overview)
-- [User Manual-v0.8](https://www.yuque.com/chenshiyi-ur8az/tt35ml/vgk4qc60g1bb37v1)
-  - [Knowledge Base-v0.8](#feature-overview)
-  - [Data Dialogue-v0.8](#feature-overview)
-  - [Excel Dialogue-v0.8](#feature-overview)
-  - [Database Dialogue-v0.8](#feature-overview)
-- [Advanced Tutorial-v0.8](#feature-overview)
-  - [Intelligent Application Use-v0.8](#feature-overview)
-  - [Multi-model Management-v0.8](#feature-overview)
-  - [Command Line Use-v0.8](#feature-overview)
-- [Model Service Deployment-v0.8](#feature-overview)
-  - [Single Machine Deployment-v0.8](#feature-overview)
-  - [Cluster Deployment-v0.8](#feature-overview)
-- [How to Debug-v0.8](#feature-overview)
-- [AWEL-v0.8](#feature-overview)
-- [FAQ-v0.8](#feature-overview)
+- [Preface](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/IntalinkPreface.md)
+- [Intalink Table Structure Explanation](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Intalink%20Table%20Structure%20Explanation.md)
+- [Intalink (Open Source Edition Data Table Structure)](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Intalink%20(Open%20Source%20Edition%20Data%20Table%20Structure))
+- [Data Relationship Expression Rules Explanation](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Data%20Relationship%20Expression%20Rules%20Explanation.md)
+- [Intalink API Usage Methods](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Intalink%20API%20Usage%20Methods.md)
+- [Intalink Link Data Explanation](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Intalink%20Link%20Data%20Explanation.md)
+- [System Deployment Instructions](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/System%20Deployment%20Instructions.md)
+- [Intalink Core Capability Video - v0.8](#feature-overview)
 
 
 ### Feature Overview
@@ -115,7 +105,6 @@ This tool is complex and innovative for databases, and our project is in urgent 
 Apache License 2.0
 
 ### Contact Us
-- WeChat: YT18526434675
 - ![企业微信](https://github.com/YT-DATA/INTALINK/assets/162880729/0f34328a-3d8a-4271-b199-96e7bc5e2ca6)
 
 - [Official Website](https://www.idataops.com.cn/h-col-110.html)
