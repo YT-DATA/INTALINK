@@ -6,6 +6,7 @@ import com.intalink.configoperations.domain.dataSource.vo.IkBpDataSourceBasicVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author whx
@@ -38,6 +39,10 @@ public interface IkBpDataSourceBasicMapper extends BaseMapper<IkBpDataSourceBasi
      * @return
      */
     List<IkBpDataSourceBasic> selectAll();
+
+    List<Map<String,Object>> selectOneData(@Param("dataSourceId") Integer dataSourceId);
+
+    List<Map<String,Object>> selectTableIdAndColumnId(@Param("dataSourceId") Integer dataSourceId,@Param("tableName") String tableName,@Param("columnName") String columnName);
 }
 
 
