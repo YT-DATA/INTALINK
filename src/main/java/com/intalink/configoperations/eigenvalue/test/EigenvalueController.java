@@ -9,6 +9,7 @@ import com.intalink.configoperations.web.domain.AjaxResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import redis.clients.jedis.Jedis;
 
@@ -29,6 +30,34 @@ public class EigenvalueController extends BaseController {
     @Autowired
     public IkBpDataSourceBasicMapper ikBpDataSourceBasicMapper;
 
+    public Jedis getJedis() {
+        Jedis jedis = new Jedis("39.106.28.179", 6379);
+        jedis.auth("Liuzong123456.");
+        return jedis;
+    }
+
+    /**
+     * 将指定数据源数据存入Redis
+     */
+    @GetMapping(value = "/putData")
+    public AjaxResult putData(@RequestParam("dataSourceId") List<Integer> dataSourceId) {
+        Jedis jedis = getJedis();
+        // 根据数据源id删除对应的key的数据
+        List<String> listValues = jedis.lrange("DataSource", 0, -1);
+
+
+
+
+
+
+        if (dataSourceId.size() > 0) {
+            //将指定数据源数据存入Redis
+        }else {
+            // 如果不存在则全部获取
+        }
+        return AjaxResult.success();
+    }
+
 
     /**
      * 获取数据源数量
@@ -36,8 +65,7 @@ public class EigenvalueController extends BaseController {
     @GetMapping(value = "/getData")
     public AjaxResult getData() {
         // 获取Redis连接
-        Jedis jedis = new Jedis("39.106.28.179", 6379);
-        jedis.auth("Liuzong123456.");
+        Jedis jedis = getJedis();
         // 根据RelationShipData这个key获取所有数据
         List<String> relationShipData = jedis.lrange("RelationShipData", 0, -1);
         // 将relationShipData中的数据按照“-”分割，将数据源id存入Set集合中
