@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intalink.configoperations.domain.dataSource.IkBpDataSourceBasic;
 import com.intalink.configoperations.domain.dataSource.SDsnaDsSettingNew;
-import com.intalink.configoperations.domain.eigenvalue.DataItem;
-import com.intalink.configoperations.domain.eigenvalue.DataSourceRedis;
+import com.intalink.configoperations.domain.dataRelationShip.vo.DataItem;
+import com.intalink.configoperations.domain.dataRelationShip.vo.DataTable;
 import com.intalink.configoperations.mapper.dataSource.IkBpDataSourceBasicMapper;
 import com.intalink.configoperations.service.eigenvalue.EigenvalueService;
 import com.intalink.configoperations.utils.DataSourceUtil;
@@ -162,12 +162,12 @@ public class EigenvalueServiceImpl implements EigenvalueService {
 
                 // 添加第四层   Map< 数据源id-数据表id-数据项id , 特征值 >
                 String s = addDataEigenvalue(dataItem.getDataItem(), jedis);
-                dataItem.setDataNum(s);
+                dataItem.setDataNum(Integer.valueOf(s));
                 dataItems.add(dataItem);
             }
-            DataSourceRedis dataSourceRedis = new DataSourceRedis();
+            DataTable dataSourceRedis = new DataTable();
             dataSourceRedis.setDataSource(newDataSourceValue);
-            dataSourceRedis.setDataItems(dataItems);
+            dataSourceRedis.setDataItem(dataItems);
             ObjectMapper objectMapper = new ObjectMapper();
             String jsonStr = null;
             try {

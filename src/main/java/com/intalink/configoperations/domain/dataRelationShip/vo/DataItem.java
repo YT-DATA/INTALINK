@@ -1,5 +1,8 @@
 package com.intalink.configoperations.domain.dataRelationShip.vo;
 
+import lombok.Data;
+
+@Data
 public class DataItem {
 
     /**
@@ -11,6 +14,10 @@ public class DataItem {
      * 数据类型
      */
     private String dataType;
+    /**
+     * 数据类型
+     */
+    private String dataTypeLength;
     /**
      * 数据长度
      */
@@ -26,45 +33,5 @@ public class DataItem {
      */
     private String dataTable;
 
-    // getters and setters
-    public String getDataItem() {
-        return dataItem;
-    }
-
-    public void setDataItem(String dataItem) {
-        this.dataItem = dataItem;
-    }
-
-    public String getDataType() {
-        return dataType;
-    }
-
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
-    }
-
-    public String getDataLength() {
-        return dataLength;
-    }
-
-    public void setDataLength(String dataLength) {
-        this.dataLength = dataLength;
-    }
-
-    public Integer getDataNum() {
-        return dataNum;
-    }
-
-    public void setDataNum(Integer dataNum) {
-        this.dataNum = dataNum;
-    }
-
-    public String getDataTable() {
-        return dataTable;
-    }
-
-    public void setDataTable(String dataTable) {
-        this.dataTable = dataTable;
-    }
 }
 
