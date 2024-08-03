@@ -8,10 +8,7 @@ import com.intalink.configoperations.utils.DataSourceUtil;
 import com.intalink.configoperations.web.controller.BaseController;
 import com.intalink.configoperations.web.domain.AjaxResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import redis.clients.jedis.Jedis;
 
 import java.io.InputStream;
@@ -26,7 +23,7 @@ import java.util.stream.Collectors;
  * @date 2024/7/31
  */
 @RestController
-@RequestMapping("/Eigenvalue")
+@RequestMapping("/eigenvalue")
 public class EigenvalueController extends BaseController {
     @Autowired
     private EigenvalueService eigenvalueService;
@@ -34,8 +31,8 @@ public class EigenvalueController extends BaseController {
     /**
      * 将指定数据源数据存入Redis
      */
-    @GetMapping(value = "/putData")
-    public AjaxResult putData(@RequestParam("dataSourceId") List<Integer> dataSourceId) {
+    @PostMapping(value = "/putData")
+    public AjaxResult putData(@RequestBody List<Integer> dataSourceId) {
         try {
             eigenvalueService.putData(dataSourceId);
         } catch (OutOfMemoryError error) {

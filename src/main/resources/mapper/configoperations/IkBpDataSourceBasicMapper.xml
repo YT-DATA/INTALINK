@@ -67,7 +67,7 @@
                 LEFT JOIN ik_bp_data_table_basic ibdtb ON ibdtb.data_model_id = ibdsdmrb.data_model_id
                 LEFT JOIN ik_bp_data_column_basic ibdcb ON ibdcb.data_table_id = ibdtb.data_table_id
         WHERE
-            ibdssrb.datasource_id = #{dataSourceId}
+            ibdssrb.datasource_id = #{dataSourceId} AND ibdcb.data_column_id is not null
     </select>
     <select id="selectTableIdAndColumnId" resultType="java.util.Map">
         SELECT
@@ -83,6 +83,24 @@
             ibdssrb.datasource_id = #{dataSourceId}
           AND ibdtb.data_table_code = #{tableName}
           AND ibdcb.data_column_code = #{columnName}
+    </select>
+    <select id="selectDataByColumnId" resultType="java.util.Map">
+        SELECT
+            ibdcb.*,
+            ibdtb.data_table_name,
+            ibdtb.data_table_code
+        FROM
+            ik_bp_data_table_basic ibdtb
+                LEFT JOIN ik_bp_data_column_basic ibdcb ON ibdcb.data_table_id = ibdtb.data_table_id
+        WHERE
+            ibdcb.data_column_id = #{columnId}
+    </select>
+    <select id="selectByTableId" resultType="java.util.Map">
+        SELECT
+            ibdcb.*
+        FROM
+            ik_bp_data_column_basic ibdcb
+        where ibdcb.data_table_id = #{tableId}
     </select>
 
 

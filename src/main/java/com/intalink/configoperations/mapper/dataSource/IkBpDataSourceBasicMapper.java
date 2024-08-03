@@ -43,6 +43,10 @@ public interface IkBpDataSourceBasicMapper extends BaseMapper<IkBpDataSourceBasi
     List<Map<String,Object>> selectOneData(@Param("dataSourceId") Integer dataSourceId);
 
     List<Map<String,Object>> selectTableIdAndColumnId(@Param("dataSourceId") Integer dataSourceId,@Param("tableName") String tableName,@Param("columnName") String columnName);
+
+    List<Map<String,Object>> selectDataByColumnId(@Param("columnId") String columnId);
+
+    List<Map<String, Object>> selectByTableId(@Param("tableId")String tableId);
 }
 
 
