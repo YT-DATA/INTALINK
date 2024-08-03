@@ -126,7 +126,7 @@ public class EigenvalueServiceImpl implements EigenvalueService {
     /**
      * 第三层  根据数据源id获取数据源信息 并保存到Redis中
      *
-     * @param tableAndColomnByDataSourceDatum
+     * @param tableAndColomnByDataSourceData
      * @param newDataSourceValue
      * @param jedis
      */
@@ -162,7 +162,7 @@ public class EigenvalueServiceImpl implements EigenvalueService {
 
                 // 添加第四层   Map< 数据源id-数据表id-数据项id , 特征值 >
                 String s = addDataEigenvalue(dataItem.getDataItem(), jedis);
-                dataItem.setDataLength(s);
+                dataItem.setDataNum(s);
                 dataItems.add(dataItem);
             }
             DataSourceRedis dataSourceRedis = new DataSourceRedis();

@@ -14,7 +14,7 @@ public class DataItem {
     private String dataTypeLength;
 
     // 数据长度
-    private String dataLength;
+    private String dataNum;
 
     // 数据表
     private String dataTable;
