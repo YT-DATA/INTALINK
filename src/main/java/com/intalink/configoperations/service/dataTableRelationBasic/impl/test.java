@@ -4,13 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 
 public class test {
 
     public static void main(String[] args) {
         try {
             // 构建ProcessBuilder来启动Python脚本
-            ProcessBuilder pb = new ProcessBuilder("python", "D:\\Project\\MyProject\\pythonUtil\\spider.py", "123", "456");
+            ProcessBuilder pb = new ProcessBuilder("D:\\Project\\MyProject\\pythonUtil\\venv\\Scripts\\python.exe", "D:\\Project\\MyProject\\pythonUtil\\startup.py", "让胡路", "整租");
+
             Process process = pb.start();
 
             // 获取Python脚本的输出流

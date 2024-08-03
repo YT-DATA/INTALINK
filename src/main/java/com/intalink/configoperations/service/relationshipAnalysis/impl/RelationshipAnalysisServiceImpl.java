@@ -1,6 +1,8 @@
 package com.intalink.configoperations.service.relationshipAnalysis.impl;
 
 import com.intalink.configoperations.domain.dataColumn.IkBpDataColumnBasic;
+import com.intalink.configoperations.domain.dataRelationShip.vo.DataItem;
+import com.intalink.configoperations.domain.dataRelationShip.vo.DataTable;
 import com.intalink.configoperations.domain.dataRelationShip.vo.RelationShip;
 import com.intalink.configoperations.domain.dataSource.IkBpDataSourceBasic;
 import com.intalink.configoperations.domain.dataTable.IkBpDataTableBasic;
@@ -12,6 +14,7 @@ import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.annotation.Resource;
 import java.sql.*;
@@ -68,6 +71,35 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
             System.err.println("链接失败，失败原因: " + e.getMessage());
         }
         return dataList;
+    }
+
+    /**
+     * @param dataSetKey
+     * @return
+     */
+    public static DataTable fetchDataTable(String dataSetKey) {
+        DataTable dataTable = new DataTable();
+        // 创建Jedis连接
+        Jedis jedis = new Jedis(REDIS_HOST, REDIS_PORT);
+        try {
+            // 设置密码
+            jedis.auth(REDIS_PASSWORD);
+            // 检查是否连接成功
+            System.out.println("链接Redis: " + jedis.ping());
+            // 获取 Redis 中键为 "dataTable-1" 的值
+            String jsonData = jedis.get(dataSetKey);
+            // 打印数据
+            System.out.println("打印jsonData:" + jsonData);
+            // 使用 Jackson ObjectMapper 将 JSON 数据转换为 DataTable 对象
+            ObjectMapper objectMapper = new ObjectMapper();
+            dataTable = objectMapper.readValue(jsonData, DataTable.class);
+            // 关闭连接
+            jedis.close();
+            System.out.println("关闭链接");
+        } catch (Exception e) {
+            System.err.println("链接失败，失败原因: " + e.getMessage());
+        }
+        return dataTable;
     }
 
     /**
@@ -175,7 +207,6 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
         }
     }
 
-
     /**
      * 获取相同表的列
      *
@@ -191,6 +222,24 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
             }
         }
         return returnList;
+    }
+
+    /**
+     * 数据项优化
+     */
+    public static void dataItemOptimization(String dataTableStr, String dataTable1Str) {
+        //获取对应数据表的内容
+        DataTable dataTable = fetchDataTable(dataTableStr);
+        //获取dataTable1 的内容
+        DataTable dataTable1 = fetchDataTable(dataTable1Str);
+        //拿到dataTable的dataItemList
+        List<DataItem> dataItemList = dataTable.getDataItem();
+        //拿到dataTable1的dataItemList
+        List<DataItem> dataItemList1 = dataTable1.getDataItem();
+
+        for (DataItem dataItem : dataItemList) {
+            
+        }
     }
 
 
