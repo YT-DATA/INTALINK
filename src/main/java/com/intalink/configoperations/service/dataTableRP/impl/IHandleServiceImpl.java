@@ -8,8 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
+
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.Source;
+
+import java.util.List;
 
 @Service
 public class IHandleServiceImpl implements IHandleService {
@@ -64,8 +72,39 @@ public class IHandleServiceImpl implements IHandleService {
 
     @Override
     public int tableRpFromLdm(InputStream ldmStream, String modelId) throws Exception {
+        String ldmContent = convertInputStreamToString(ldmStream);
+        String htmlContent = convertLDMToHTML(ldmContent);
+        Source source = new Source(htmlContent);
+        List<Element> elements = source.getAllElements("o:Relationship"); // 获取所有 <o:Relationship> 标签
+        for (Element element : elements) {
+            if (element.toString() != null) {
+                // 不为空则继续进行获取标签值
 
+                // 调试输出 <o:Relationship> 元素内容
+                System.out.println("Relationship Element: " + element.toString());
+            }
+            System.out.println("数据是空");
+        }
         return 1;
+    }
+
+    // 将InputStream转换为字符串
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            stringBuilder.append(line).append("\n");
+        }
+        bufferedReader.close();
+        return stringBuilder.toString();
+    }
+
+    // 将.LDM内容转换为HTML
+    private static String convertLDMToHTML(String ldmContent) {
+        // 这里可以编写具体的转换逻辑，将.LDM内容转换为HTML
+        // 这里只是简单示例，假设直接将.LDM内容包裹在HTML的<pre>标签中
+        return "<html><body><pre>" + ldmContent + "</pre></body></html>";
     }
 
     private PdmModel getPdmModel(InputStream stream, String mid) throws Exception {
