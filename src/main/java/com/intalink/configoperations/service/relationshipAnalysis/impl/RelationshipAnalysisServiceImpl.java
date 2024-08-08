@@ -196,8 +196,6 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                 if (!data1.equals(data)) {
                     String tableId1 = data1.split("-")[1];
                     List<String> theSameTableColumn = getTheSameTableColumn(tableId1);
-
-
                     //比较值列
                     List<String> valueList1 = fetchRelationShipData(data1);
                     //关系分析
@@ -227,19 +225,80 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
     /**
      * 数据项优化
      */
-    public static void dataItemOptimization(String dataTableStr, String dataTable1Str) {
+    public static void dataItemOptimization(String dataTableKey, String dataTable1Key) {
         //获取对应数据表的内容
-        DataTable dataTable = fetchDataTable(dataTableStr);
+        DataTable dataTable = fetchDataTable(dataTableKey);
         //获取dataTable1 的内容
-        DataTable dataTable1 = fetchDataTable(dataTable1Str);
+        DataTable dataTable1 = fetchDataTable(dataTable1Key);
         //拿到dataTable的dataItemList
         List<DataItem> dataItemList = dataTable.getDataItem();
         //拿到dataTable1的dataItemList
         List<DataItem> dataItemList1 = dataTable1.getDataItem();
 
         for (DataItem dataItem : dataItemList) {
-            
+            //先对dataItemList1进行排序
+            dataItemList1 = dataItemSort(dataItem, dataItemList1);
+            //遍历dataItemList1
+            for (DataItem dataItem1 : dataItemList1) {
+                if (getIsComparisonFlag(dataItem.getDataItem(), dataItem1.getDataItem())) {//调用志慧的方法，判断两个字段是否需要比对 返回true,则需要进行比对
+                    //获取数据项的数据值
+                    List<String> valueList = fetchRelationShipData(dataItem.getDataItem());
+                    //获取数据项的数据值
+                    List<String> valueList1 = fetchRelationShipData(dataItem1.getDataItem());
+                    //进行比对
+                    boolean flag = relationShipsAnalysis(dataItem.getDataItem(), dataItem1.getDataItem(), valueList, valueList1);
+                    if (flag) {//如果比对成功，则跳出循环
+
+                        break;
+                    }
+                }
+            }
         }
+    }
+
+    /**
+     * 根据dataItem 对dataItemList1 进行排序
+     *
+     * @param dataItem
+     * @param dataItemList1
+     * @return
+     */
+    public static List<DataItem> dataItemSort(DataItem dataItem, List<DataItem> dataItemList1) {
+        // 使用 Comparator 对 dataItemList1 进行排序
+        Collections.sort(dataItemList1, new Comparator<DataItem>() {
+            @Override
+            public int compare(DataItem item1, DataItem item2) {
+                // 按 DataType 匹配程度排序
+                if (item1.getDataType().equals(dataItem.getDataType()) && !item2.getDataType().equals(dataItem.getDataType())) {
+                    return -1; // item1 类型匹配，优先级高于 item2
+                } else if (!item1.getDataType().equals(dataItem.getDataType()) && item2.getDataType().equals(dataItem.getDataType())) {
+                    return 1; // item2 类型匹配，优先级低于 item1
+                } else {
+                    // 按 DataLength 匹配程度排序
+                    if (item1.getDataLength() == dataItem.getDataLength() && item2.getDataLength() != dataItem.getDataLength()) {
+                        return -1; // item1 长度匹配，优先级高于 item2
+                    } else if (item1.getDataLength() != dataItem.getDataLength() && item2.getDataLength() == dataItem.getDataLength()) {
+                        return 1; // item2 长度匹配，优先级低于 item1
+                    } else {
+                        return 0; // 无匹配或匹配相同，保持原顺序
+                    }
+                }
+            }
+        });
+
+        return dataItemList1;
+    }
+
+
+    /**
+     * 判断两个字段是否需要比对
+     *
+     * @param columnKey           当前对比字段,如: 1-1-1(数据源ID-数据表ID-数据项ID)
+     * @param comparisonColumnKey 对比目标字段,如: 1-1-1(数据源ID-数据表ID-数据项ID)
+     * @return
+     */
+    public static boolean getIsComparisonFlag(String columnKey, String comparisonColumnKey) {
+        return true;
     }
 
 
@@ -251,9 +310,11 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
      * @param valueList
      * @param valueList1
      */
-    public static void relationShipsAnalysis(String data, String data1, List<String> valueList, List<String> valueList1) {
+    public static Boolean relationShipsAnalysis(String data, String data1, List<String> valueList, List<String> valueList1) {
         //定义关系数据集
         List<RelationShip> relationShipList = new ArrayList<>();
+
+        boolean result = false;
         //判断逻辑1
         //计算交集、差集1、差集2
         Map<String, List<String>> resultMap = calculateOperations(valueList, valueList1);
@@ -272,6 +333,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
             relationShip.setRelationShipTypeStr("");//关联表达式
             //添加进关联表达式结果
             relationShipList.add(relationShip);
+            result = true;
         } else {
             //列1同交集的差集或者列2同交集的差集为0
             if (difference1.size() == 0 || difference2.size() == 0) {
@@ -281,6 +343,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                 relationShip.setRelationShipTypeStr("");//关联表达式
                 //添加进关联表达式结果
                 relationShipList.add(relationShip);
+                result = true;
             }
             int difference1Count = 0;
             int difference2Count = 0;
@@ -306,6 +369,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                     relationShip.setRelationShipTypeStr("");//关联表达式
                     //添加进关联表达式结果
                     relationShipList.add(relationShip);
+                    result = true;
                 }
             }
             //列2同交集的差集大于0
@@ -330,6 +394,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                     relationShip.setRelationShipTypeStr("");//关联表达式
                     //添加进关联表达式结果
                     relationShipList.add(relationShip);
+                    result = true;
                 }
             }
             if (difference1Count == difference1.size() && difference2Count <= difference2.size()) {
@@ -341,6 +406,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                 relationShip.setRelationShipTypeStr("");//关联表达式
                 //添加进关联表达式结果
                 relationShipList.add(relationShip);
+                result = true;
             }
             if (difference1Count == difference1.size() && difference2Count == 0) {
                 //列2是主表（或主数据）列2包含列1
@@ -350,6 +416,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                 relationShip.setRelationShipTypeStr("");//关联表达式
                 //添加进关联表达式结果
                 relationShipList.add(relationShip);
+                result = true;
             }
             if (difference1Count <= difference1.size() && difference1Count > 0 && difference2Count == difference2.size()) {
                 //列1=列2（全等）
@@ -360,6 +427,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                 relationShip.setRelationShipTypeStr("");//关联表达式
                 //添加进关联表达式结果
                 relationShipList.add(relationShip);
+                result = true;
             }
             if (difference1Count == 0 && difference2Count == difference2.size()) {
                 //列1是主表（或主数据）列1包含列2
@@ -369,6 +437,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                 relationShip.setRelationShipTypeStr("");//关联表达式
                 //添加进关联表达式结果
                 relationShipList.add(relationShip);
+                result = true;
             }
             if (difference1Count < difference1.size() && difference1Count > 0 && difference2Count < difference2.size() && difference2Count > 0) {
                 //列1=列2
@@ -380,12 +449,14 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                 relationShip.setRelationShipTypeStr("");//关联表达式
                 //添加进关联表达式结果
                 relationShipList.add(relationShip);
+                result = true;
             }
             if (difference1Count == 0 && difference2Count == 0) {
                 //前四种判断方法没有得到相等结论时，继续判断：
                 //如果差集的数据集与取样数据相比，所占比例极低，且扩大一次取样比例后，差集与取样比例相比，仍只占小比例，那么适用前两种判断逻辑，差集部分视为数据质量；如果差集所占比例较大，则上述两种组合，视为数据项无关系。
             }
         }
+        return result;
     }
 
 
