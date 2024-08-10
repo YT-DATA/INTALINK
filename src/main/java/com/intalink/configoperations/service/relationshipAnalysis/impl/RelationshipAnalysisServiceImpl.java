@@ -159,7 +159,9 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
         // 进行数据比对，进行关联分析
         // 如何确定redis当中存储的数据格式，能确保比对。
 
-        dataRelationShip();
+        //dataRelationShip();
+
+        dataItemOptimization("dataTable-11111374", "dataTable-11111266");
 
     }
 
