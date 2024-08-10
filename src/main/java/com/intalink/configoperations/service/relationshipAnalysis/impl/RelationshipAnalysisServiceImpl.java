@@ -9,6 +9,7 @@ import com.intalink.configoperations.domain.dataTable.IkBpDataTableBasic;
 import com.intalink.configoperations.mapper.dataColumn.IkBpDataColumnBasicMapper;
 import com.intalink.configoperations.mapper.dataSource.IkBpDataSourceBasicMapper;
 import com.intalink.configoperations.mapper.dataTable.IkBpDataTableBasicMapper;
+import com.intalink.configoperations.service.dataTableRelationBasic.impl.IkRpDataTableRelationBasicServiceImpl;
 import com.intalink.configoperations.service.relationshipAnalysis.RelationshipAnalysisService;
 import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,8 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
     public IkBpDataTableBasicMapper ikBpDataTableBasicMapper;
     @Autowired
     public IkBpDataColumnBasicMapper ikBpDataColumnBasicMapper;
+    @Autowired
+    public static IkRpDataTableRelationBasicServiceImpl ikRpDataTableRelationBasicService;
 
 
     /**
@@ -242,16 +245,20 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
             dataItemList1 = dataItemSort(dataItem, dataItemList1);
             //遍历dataItemList1
             for (DataItem dataItem1 : dataItemList1) {
-                if (getIsComparisonFlag(dataItem.getDataItem(), dataItem1.getDataItem())) {//调用志慧的方法，判断两个字段是否需要比对 返回true,则需要进行比对
+                if (ikRpDataTableRelationBasicService.getIsComparisonFlag(dataItem.getDataItem(), dataItem1.getDataItem())) {//调用志慧的方法，判断两个字段是否需要比对 返回true,则需要进行比对
                     //获取数据项的数据值
                     List<String> valueList = fetchRelationShipData(dataItem.getDataItem());
                     //获取数据项的数据值
                     List<String> valueList1 = fetchRelationShipData(dataItem1.getDataItem());
                     //进行比对
                     boolean flag = relationShipsAnalysis(dataItem.getDataItem(), dataItem1.getDataItem(), valueList, valueList1);
-                    if (flag) {//如果比对成功，则跳出循环
-
+                    if (flag) {//如果比对成功，则跳出循环，进行下一个dataItem的比对
+                        //将对比成功的字段设置为true
+                        ikRpDataTableRelationBasicService.setComparisonFlag(dataItem.getDataItem(), dataItem1.getDataItem(), true);
                         break;
+                    } else {
+                        //将对比成功的字段设置为false
+                        ikRpDataTableRelationBasicService.setComparisonFlag(dataItem.getDataItem(), dataItem1.getDataItem(), false);
                     }
                 }
             }
@@ -293,18 +300,6 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
 
 
     /**
-     * 判断两个字段是否需要比对
-     *
-     * @param columnKey           当前对比字段,如: 1-1-1(数据源ID-数据表ID-数据项ID)
-     * @param comparisonColumnKey 对比目标字段,如: 1-1-1(数据源ID-数据表ID-数据项ID)
-     * @return
-     */
-    public static boolean getIsComparisonFlag(String columnKey, String comparisonColumnKey) {
-        return true;
-    }
-
-
-    /**
      * 数据关联分析
      *
      * @param data
@@ -315,30 +310,22 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
     public static Boolean relationShipsAnalysis(String data, String data1, List<String> valueList, List<String> valueList1) {
         //定义关系数据集
         List<RelationShip> relationShipList = new ArrayList<>();
-
         boolean result = false;
-        //判断逻辑1
-        //计算交集、差集1、差集2
-        Map<String, List<String>> resultMap = calculateOperations(valueList, valueList1);
-        // 分别获取交集、差集1、差集2
-        //交集
-        List<String> intersection = resultMap.get("intersection");
-        //差集1
-        List<String> difference1 = resultMap.get("difference1");
-        //差集2
-        List<String> difference2 = resultMap.get("difference2");
-        //交集同List和List1完全相等，则认为关联
-        if (intersection.size() == valueList.size() && intersection.size() == valueList1.size()) {
-            RelationShip relationShip = new RelationShip();
-            relationShip.setMainColumn(data);
-            relationShip.setRelatedColumn(data1);
-            relationShip.setRelationShipTypeStr("");//关联表达式
-            //添加进关联表达式结果
-            relationShipList.add(relationShip);
-            result = true;
-        } else {
-            //列1同交集的差集或者列2同交集的差集为0
-            if (difference1.size() == 0 || difference2.size() == 0) {
+
+        //判断valueList和valueList1是否都大于0,只有在都不是空的情况对比才有意义
+        if (valueList.size() > 0 && valueList1.size() > 0) {
+            //判断逻辑1
+            //计算交集、差集1、差集2
+            Map<String, List<String>> resultMap = calculateOperations(valueList, valueList1);
+            // 分别获取交集、差集1、差集2
+            //交集
+            List<String> intersection = resultMap.get("intersection");
+            //差集1
+            List<String> difference1 = resultMap.get("difference1");
+            //差集2
+            List<String> difference2 = resultMap.get("difference2");
+            //交集同List和List1完全相等，则认为关联
+            if (intersection.size() == valueList.size() && intersection.size() == valueList1.size()) {
                 RelationShip relationShip = new RelationShip();
                 relationShip.setMainColumn(data);
                 relationShip.setRelatedColumn(data1);
@@ -346,25 +333,9 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                 //添加进关联表达式结果
                 relationShipList.add(relationShip);
                 result = true;
-            }
-            int difference1Count = 0;
-            int difference2Count = 0;
-            //列1同交集的差集大于0
-            if (difference1.size() > 0) {
-                //列1同交集的差集 到数据源库当中验证
-                for (String value : difference1) {
-                    //验证列1同交集的差集 到数据源库当中验证
-                    //设定value的规则为：数据源Id-数据表Id-数据项Id-数据值
-
-                    //对关键数值进行截取
-                    String dataSourceId = data.split("-")[0];
-                    String tableId = data.split("-")[1];
-                    String dataItemId = data.split("-")[2];
-                    String dataValue = value;
-                    difference1Count += getRelationShip(dataSourceId, tableId, dataItemId, dataValue);
-                }
-                //验证结果
-                if (difference1Count == difference1.size()) {
+            } else {
+                //列1同交集的差集或者列2同交集的差集为0
+                if (difference1.size() == 0 || difference2.size() == 0) {
                     RelationShip relationShip = new RelationShip();
                     relationShip.setMainColumn(data);
                     relationShip.setRelatedColumn(data1);
@@ -373,23 +344,71 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                     relationShipList.add(relationShip);
                     result = true;
                 }
-            }
-            //列2同交集的差集大于0
-            if (difference2.size() > 0) {
-                //列1同交集的差集 到数据源库当中验证
-                for (String value : difference2) {
-                    //验证列1同交集的差集 到数据源库当中验证
-                    //设定value的规则为：数据源Id-数据表Id-数据项Id-数据值
+                int difference1Count = 0;
+                int difference2Count = 0;
+                //列1同交集的差集大于0
+                if (difference1.size() > 0) {
+                    //列1同交集的差集 到数据源库当中验证
+                    for (String value : difference1) {
+                        //验证列1同交集的差集 到数据源库当中验证
+                        //设定value的规则为：数据源Id-数据表Id-数据项Id-数据值
 
-                    //对关键数值进行截取
-                    String dataSourceId = data1.split("-")[0];
-                    String tableId = data1.split("-")[1];
-                    String dataItemId = data1.split("-")[2];
-                    String dataValue = value;
-                    difference2Count += getRelationShip(dataSourceId, tableId, dataItemId, dataValue);
+                        //对关键数值进行截取
+                        String dataSourceId = data.split("-")[0];
+                        String tableId = data.split("-")[1];
+                        String dataItemId = data.split("-")[2];
+                        String dataValue = value;
+                        difference1Count += getRelationShip(dataSourceId, tableId, dataItemId, dataValue);
+                    }
+                    //验证结果
+                    if (difference1Count == difference1.size()) {
+                        RelationShip relationShip = new RelationShip();
+                        relationShip.setMainColumn(data);
+                        relationShip.setRelatedColumn(data1);
+                        relationShip.setRelationShipTypeStr("");//关联表达式
+                        //添加进关联表达式结果
+                        relationShipList.add(relationShip);
+                        result = true;
+                    }
                 }
-                //验证结果
-                if (difference2Count == difference2.size()) {
+                //列2同交集的差集大于0
+                if (difference2.size() > 0) {
+                    //列1同交集的差集 到数据源库当中验证
+                    for (String value : difference2) {
+                        //验证列1同交集的差集 到数据源库当中验证
+                        //设定value的规则为：数据源Id-数据表Id-数据项Id-数据值
+
+                        //对关键数值进行截取
+                        String dataSourceId = data1.split("-")[0];
+                        String tableId = data1.split("-")[1];
+                        String dataItemId = data1.split("-")[2];
+                        String dataValue = value;
+                        difference2Count += getRelationShip(dataSourceId, tableId, dataItemId, dataValue);
+                    }
+                    //验证结果
+                    if (difference2Count == difference2.size()) {
+                        RelationShip relationShip = new RelationShip();
+                        relationShip.setMainColumn(data1);
+                        relationShip.setRelatedColumn(data);
+                        relationShip.setRelationShipTypeStr("");//关联表达式
+                        //添加进关联表达式结果
+                        relationShipList.add(relationShip);
+                        result = true;
+                    }
+                }
+                if (difference1Count == difference1.size() && difference2Count <= difference2.size()) {
+                    //列1=列2（全等）
+                    //列2有质量问题
+                    RelationShip relationShip = new RelationShip();
+                    relationShip.setMainColumn(data);
+                    relationShip.setRelatedColumn(data1);
+                    relationShip.setRelationShipTypeStr("");//关联表达式
+                    //添加进关联表达式结果
+                    relationShipList.add(relationShip);
+                    result = true;
+                }
+                if (difference1Count == difference1.size() && difference2Count == 0) {
+                    //列2是主表（或主数据）列2包含列1
                     RelationShip relationShip = new RelationShip();
                     relationShip.setMainColumn(data1);
                     relationShip.setRelatedColumn(data);
@@ -398,64 +417,43 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                     relationShipList.add(relationShip);
                     result = true;
                 }
-            }
-            if (difference1Count == difference1.size() && difference2Count <= difference2.size()) {
-                //列1=列2（全等）
-                //列2有质量问题
-                RelationShip relationShip = new RelationShip();
-                relationShip.setMainColumn(data);
-                relationShip.setRelatedColumn(data1);
-                relationShip.setRelationShipTypeStr("");//关联表达式
-                //添加进关联表达式结果
-                relationShipList.add(relationShip);
-                result = true;
-            }
-            if (difference1Count == difference1.size() && difference2Count == 0) {
-                //列2是主表（或主数据）列2包含列1
-                RelationShip relationShip = new RelationShip();
-                relationShip.setMainColumn(data1);
-                relationShip.setRelatedColumn(data);
-                relationShip.setRelationShipTypeStr("");//关联表达式
-                //添加进关联表达式结果
-                relationShipList.add(relationShip);
-                result = true;
-            }
-            if (difference1Count <= difference1.size() && difference1Count > 0 && difference2Count == difference2.size()) {
-                //列1=列2（全等）
-                //列1有质量问题
-                RelationShip relationShip = new RelationShip();
-                relationShip.setMainColumn(data);
-                relationShip.setRelatedColumn(data1);
-                relationShip.setRelationShipTypeStr("");//关联表达式
-                //添加进关联表达式结果
-                relationShipList.add(relationShip);
-                result = true;
-            }
-            if (difference1Count == 0 && difference2Count == difference2.size()) {
-                //列1是主表（或主数据）列1包含列2
-                RelationShip relationShip = new RelationShip();
-                relationShip.setMainColumn(data);
-                relationShip.setRelatedColumn(data1);
-                relationShip.setRelationShipTypeStr("");//关联表达式
-                //添加进关联表达式结果
-                relationShipList.add(relationShip);
-                result = true;
-            }
-            if (difference1Count < difference1.size() && difference1Count > 0 && difference2Count < difference2.size() && difference2Count > 0) {
-                //列1=列2
-                //第一种情况：二者通过率均达到一定比例，未通过部分做为数据质量问题；
-                //第二种情况：一个通过率高，另一个通过率低；高者达到一定比例后，视为子集，另一列为主表数据。
-                RelationShip relationShip = new RelationShip();
-                relationShip.setMainColumn(data);
-                relationShip.setRelatedColumn(data1);
-                relationShip.setRelationShipTypeStr("");//关联表达式
-                //添加进关联表达式结果
-                relationShipList.add(relationShip);
-                result = true;
-            }
-            if (difference1Count == 0 && difference2Count == 0) {
-                //前四种判断方法没有得到相等结论时，继续判断：
-                //如果差集的数据集与取样数据相比，所占比例极低，且扩大一次取样比例后，差集与取样比例相比，仍只占小比例，那么适用前两种判断逻辑，差集部分视为数据质量；如果差集所占比例较大，则上述两种组合，视为数据项无关系。
+                if (difference1Count <= difference1.size() && difference1Count > 0 && difference2Count == difference2.size()) {
+                    //列1=列2（全等）
+                    //列1有质量问题
+                    RelationShip relationShip = new RelationShip();
+                    relationShip.setMainColumn(data);
+                    relationShip.setRelatedColumn(data1);
+                    relationShip.setRelationShipTypeStr("");//关联表达式
+                    //添加进关联表达式结果
+                    relationShipList.add(relationShip);
+                    result = true;
+                }
+                if (difference1Count == 0 && difference2Count == difference2.size()) {
+                    //列1是主表（或主数据）列1包含列2
+                    RelationShip relationShip = new RelationShip();
+                    relationShip.setMainColumn(data);
+                    relationShip.setRelatedColumn(data1);
+                    relationShip.setRelationShipTypeStr("");//关联表达式
+                    //添加进关联表达式结果
+                    relationShipList.add(relationShip);
+                    result = true;
+                }
+                if (difference1Count < difference1.size() && difference1Count > 0 && difference2Count < difference2.size() && difference2Count > 0) {
+                    //列1=列2
+                    //第一种情况：二者通过率均达到一定比例，未通过部分做为数据质量问题；
+                    //第二种情况：一个通过率高，另一个通过率低；高者达到一定比例后，视为子集，另一列为主表数据。
+                    RelationShip relationShip = new RelationShip();
+                    relationShip.setMainColumn(data);
+                    relationShip.setRelatedColumn(data1);
+                    relationShip.setRelationShipTypeStr("");//关联表达式
+                    //添加进关联表达式结果
+                    relationShipList.add(relationShip);
+                    result = true;
+                }
+                if (difference1Count == 0 && difference2Count == 0) {
+                    //前四种判断方法没有得到相等结论时，继续判断：
+                    //如果差集的数据集与取样数据相比，所占比例极低，且扩大一次取样比例后，差集与取样比例相比，仍只占小比例，那么适用前两种判断逻辑，差集部分视为数据质量；如果差集所占比例较大，则上述两种组合，视为数据项无关系。
+                }
             }
         }
         return result;
