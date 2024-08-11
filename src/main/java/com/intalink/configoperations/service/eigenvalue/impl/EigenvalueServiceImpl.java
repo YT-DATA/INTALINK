@@ -13,6 +13,7 @@ import com.intalink.configoperations.domain.dataRelationShip.vo.DataItem;
 import com.intalink.configoperations.domain.dataRelationShip.vo.DataTable;
 import com.intalink.configoperations.mapper.dataSource.IkBpDataSourceBasicMapper;
 import com.intalink.configoperations.service.eigenvalue.EigenvalueService;
+import com.intalink.configoperations.utils.DESUtils;
 import com.intalink.configoperations.utils.DataSourceUtil;
 import com.intalink.configoperations.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,21 +39,21 @@ public class EigenvalueServiceImpl implements EigenvalueService {
     @Autowired
     public IkBpDataSourceBasicMapper ikBpDataSourceBasicMapper;
 
-//    public Jedis jedis = RedisUtil.getJedis();
+    public Jedis jedis = RedisUtil.getJedis();
 
-    public Jedis getJedis() {
+//    public Jedis getJedis() {
 //        Jedis jedis = new Jedis("39.106.28.179", 6379);
-        Jedis jedis = new Jedis("localhost", 6379);
+////        Jedis jedis = new Jedis("localhost", 6379);
 //        jedis.auth("Liuzong123456.");
-        return jedis;
-    }
+//        return jedis;
+//    }
 
     /**
      * 将指定数据源数据存入Redis
      */
     public void putData(List<Integer> dataSourceIds) {
 
-        Jedis jedis = getJedis();
+//        Jedis jedis = getJedis();
 
         //  根据数据源id获取数据对应信息
         if (dataSourceIds != null && dataSourceIds.size() > 0) {
@@ -70,7 +71,7 @@ public class EigenvalueServiceImpl implements EigenvalueService {
      */
     public int putDataNew() {
         try {
-            Jedis jedis = getJedis();
+//            Jedis jedis = getJedis();
             List<IkBpDataSourceBasic> ikBpDataSourceBasics = ikBpDataSourceBasicMapper.selectAll();
             List<Integer> dataSourceIds = ikBpDataSourceBasics.stream().map(IkBpDataSourceBasic::getDataSourceId).collect(Collectors.toList());
 
@@ -421,8 +422,10 @@ public class EigenvalueServiceImpl implements EigenvalueService {
             sDsnaDsSettingNew.setIp(host);
             sDsnaDsSettingNew.setPort(port);
             sDsnaDsSettingNew.setDatabaseName(database);
-            sDsnaDsSettingNew.setDatasourceUser("root");
-            sDsnaDsSettingNew.setDatasourcePass("Liuzong123456.");
+//            sDsnaDsSettingNew.setDatasourceUser("root");
+//            sDsnaDsSettingNew.setDatasourcePass("Liuzong123456.");
+            sDsnaDsSettingNew.setDatasourceUser(ikBpDataSourceBasic.getUserName());
+            sDsnaDsSettingNew.setDatasourcePass(DESUtils.decrypt(ikBpDataSourceBasic.getPassword()));
             // 连接方式(0：服务名，1：SID )  当数据库类型为Oracle时，该属性才有值
             // SID (当数据源类型为Oracle且连接方式为SID时，该属性才有值)
             if (ikBpDataSourceBasic.getDatabaseType().equals("oracle")) {
