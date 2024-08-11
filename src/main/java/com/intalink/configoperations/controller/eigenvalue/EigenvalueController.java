@@ -42,4 +42,19 @@ public class EigenvalueController extends BaseController {
         return success();
     }
 
+
+    /**
+     * 将指定数据源数据存入Redis
+     */
+    @PostMapping(value = "/putDataNew")
+    public AjaxResult putDataNew() {
+        try {
+            eigenvalueService.putDataNew();
+        } catch (OutOfMemoryError error) {
+            //自定义返回
+            return new AjaxResult(500, "内存溢出导致的错误", null);
+        }
+        return success();
+    }
+
 }

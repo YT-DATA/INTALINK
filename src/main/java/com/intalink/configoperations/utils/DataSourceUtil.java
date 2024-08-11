@@ -226,18 +226,18 @@ public class DataSourceUtil {
             if (rs != null) {
                 try {
                     rs.close();
-                    System.out.println("清理了rs");
+//                    System.out.println("清理了rs");
                 } catch (Exception e) {
                 }
             }
             if (st != null) try {
                 st.close();
-                System.out.println("清理了st");
+//                System.out.println("清理了st");
             } catch (Exception e) {
             }
             if (conn != null) try {
                 conn.close();
-                System.out.println("清理了conn");
+//                System.out.println("清理了conn");
             } catch (Exception e) {
             }
         }
