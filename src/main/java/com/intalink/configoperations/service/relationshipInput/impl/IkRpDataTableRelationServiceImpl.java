@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class IkRpDataTableRelationServiceImpl implements IkRpDataTableRelationSe
     private IkBpDataTableBasicMapper ikBpDataTableBasicMapper;
     @Autowired
     private IkBpDataColumnBasicMapper ikBpDataColumnBasicMapper;
-    @Autowired
+    @Resource
     private IkRpDataTableRelationMapper ikRpDataTableRelationMapper;
 
     /**
@@ -120,6 +121,7 @@ public class IkRpDataTableRelationServiceImpl implements IkRpDataTableRelationSe
 
     /**
      * 获取关联模型绑定信息
+     *
      * @return
      */
     @Override
@@ -130,6 +132,7 @@ public class IkRpDataTableRelationServiceImpl implements IkRpDataTableRelationSe
 
     /**
      * 获取关联数据表绑定信息
+     *
      * @param dataModelId
      * @return
      */
@@ -141,6 +144,7 @@ public class IkRpDataTableRelationServiceImpl implements IkRpDataTableRelationSe
 
     /**
      * 获取关联数据项绑定信息
+     *
      * @param dataTableId
      * @return
      */
@@ -152,6 +156,7 @@ public class IkRpDataTableRelationServiceImpl implements IkRpDataTableRelationSe
 
     /**
      * 根据参数Ids删除信息
+     *
      * @param dataTableRelationIds
      * @return
      */
@@ -172,6 +177,7 @@ public class IkRpDataTableRelationServiceImpl implements IkRpDataTableRelationSe
 
     /**
      * 新增或修改（true新增，false修改）
+     *
      * @param ikRpDataTableRelationVos
      * @param insertOrUpdate
      * @return
@@ -197,10 +203,9 @@ public class IkRpDataTableRelationServiceImpl implements IkRpDataTableRelationSe
     @Transactional
     public int updateById(IkRpDataTableRelationVo ikRpDataTableRelationVo) {
         QueryWrapper<IkRpDataTableRelation> qw = new QueryWrapper<>();
-        qw.eq("data_column_id",ikRpDataTableRelationVo.getDataColumnId())
-        .eq("relation_data_column_id",ikRpDataTableRelationVo.getRelationDataColumnId());
+        qw.eq("data_column_id", ikRpDataTableRelationVo.getDataColumnId()).eq("relation_data_column_id", ikRpDataTableRelationVo.getRelationDataColumnId());
         IkRpDataTableRelation ikRpDataTableRelation1 = ikRpDataTableRelationMapper.selectOne(qw);
-        if (ikRpDataTableRelation1 != null ){
+        if (ikRpDataTableRelation1 != null) {
             return -1;
         }
         IkRpDataTableRelation ikRpDataTableRelation = new IkRpDataTableRelation();
@@ -242,15 +247,13 @@ public class IkRpDataTableRelationServiceImpl implements IkRpDataTableRelationSe
             }
             newList.add(ikRpDataTableRelation);
         }
-        if (newList.size() > 0)
-            ikRpDataTableRelationMapper.insertAll(newList);
+        if (newList.size() > 0) ikRpDataTableRelationMapper.insertAll(newList);
         return 1;
     }
 
     public Boolean theOne(IkRpDataTableRelation ikRpDataTableRelation) {
         QueryWrapper<IkRpDataTableRelation> qw = new QueryWrapper<>();
-        qw.eq("data_column_id", ikRpDataTableRelation.getDataColumnId())
-                .eq("relation_data_column_id", ikRpDataTableRelation.getRelationDataColumnId());
+        qw.eq("data_column_id", ikRpDataTableRelation.getDataColumnId()).eq("relation_data_column_id", ikRpDataTableRelation.getRelationDataColumnId());
         IkRpDataTableRelation ikRpDataTableRelationOne = ikRpDataTableRelationMapper.selectOne(qw);
         if (ikRpDataTableRelationOne != null && ikRpDataTableRelationOne.getDataTableRelationId() != null) {
             IkRpDataTableRelationVo ikRpDataTableRelationVo = new IkRpDataTableRelationVo();

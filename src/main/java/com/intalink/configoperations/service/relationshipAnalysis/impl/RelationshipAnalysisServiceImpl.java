@@ -6,11 +6,13 @@ import com.intalink.configoperations.domain.dataRelationShip.vo.DataTable;
 import com.intalink.configoperations.domain.dataRelationShip.vo.RelationShip;
 import com.intalink.configoperations.domain.dataSource.IkBpDataSourceBasic;
 import com.intalink.configoperations.domain.dataTable.IkBpDataTableBasic;
+import com.intalink.configoperations.domain.relationshipInput.vo.IkRpDataTableRelationVo;
 import com.intalink.configoperations.mapper.dataColumn.IkBpDataColumnBasicMapper;
 import com.intalink.configoperations.mapper.dataSource.IkBpDataSourceBasicMapper;
 import com.intalink.configoperations.mapper.dataTable.IkBpDataTableBasicMapper;
 import com.intalink.configoperations.service.dataTableRelationBasic.impl.IkRpDataTableRelationBasicServiceImpl;
 import com.intalink.configoperations.service.relationshipAnalysis.RelationshipAnalysisService;
+import com.intalink.configoperations.service.relationshipInput.impl.IkRpDataTableRelationServiceImpl;
 import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,8 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
     public IkBpDataColumnBasicMapper ikBpDataColumnBasicMapper;
     @Autowired
     public static IkRpDataTableRelationBasicServiceImpl ikRpDataTableRelationBasicService;
+//    @Resource
+//    public static IkRpDataTableRelationServiceImpl ikRpDataTableRelationService;
 
 
     /**
@@ -164,7 +168,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
 
         //dataRelationShip();
 
-        dataItemOptimization("dataTable-11111374", "dataTable-11111266");
+        dataItemOptimization("dataTable-11111394", "dataTable-11111285");
 
     }
 
@@ -455,10 +459,37 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                     //如果差集的数据集与取样数据相比，所占比例极低，且扩大一次取样比例后，差集与取样比例相比，仍只占小比例，那么适用前两种判断逻辑，差集部分视为数据质量；如果差集所占比例较大，则上述两种组合，视为数据项无关系。
                 }
             }
+
+            //判断relationShipList长度,存进数据库
+            if (relationShipList.size() > 0) {
+                List<IkRpDataTableRelationVo> ikRpDataTableRelationVos = changeRelationShipToVo(relationShipList);
+                IkRpDataTableRelationServiceImpl ikRpDataTableRelationService = new IkRpDataTableRelationServiceImpl();
+                //存进数据库
+                //ikRpDataTableRelationService.insert(ikRpDataTableRelationVos);
+            }
         }
         return result;
     }
 
+    /**
+     * 实体List转化
+     *
+     * @param relationShipList
+     * @return
+     */
+    public static List<IkRpDataTableRelationVo> changeRelationShipToVo(List<RelationShip> relationShipList) {
+        List<IkRpDataTableRelationVo> ikRpDataTableRelationVos = new ArrayList<>();
+        for (RelationShip relationShip : relationShipList) {
+            IkRpDataTableRelationVo ikRpDataTableRelationVo = new IkRpDataTableRelationVo();
+            ikRpDataTableRelationVo.setDataModelTableColumn(relationShip.getMainColumn());
+            ikRpDataTableRelationVo.setRelationDataModelTableColumn(relationShip.getRelatedColumn());
+            ikRpDataTableRelationVo.setRelationStr(relationShip.getRelationShipTypeStr());
+            ikRpDataTableRelationVo.setDataColumnId(Integer.valueOf(relationShip.getMainColumn().split("-")[1]));
+            ikRpDataTableRelationVo.setRelationDataColumnId(Integer.valueOf(relationShip.getRelatedColumn().split("-")[1]));
+            ikRpDataTableRelationVos.add(ikRpDataTableRelationVo);
+        }
+        return ikRpDataTableRelationVos;
+    }
 
     /**
      * 分别求取交集、差集1、差集2
@@ -571,8 +602,10 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
             rs = stmt.executeQuery(sqlstr);
 
             // 处理查询结果
-            if (rs.next() && rs.getInt(1) > 0) {
-                result = 1; // 存在
+            if (rs.next()) {
+                if (rs.getRow() > 0 && rs.getString(1) != null) {
+                    result = 1; // 存在
+                }
             }
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
