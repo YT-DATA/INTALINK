@@ -52,7 +52,7 @@ public class IkRpDataTableRelationBasicServiceImpl implements IkRpDataTableRelat
      * @param comparisonColumnKey 对比目标字段,如: 1-1-1(数据源ID-数据表ID-数据项ID)
      * @return
      */
-    public static boolean getIsComparisonFlag(String columnKey, String comparisonColumnKey) {
+    public boolean getIsComparisonFlag(String columnKey, String comparisonColumnKey) {
         RedisUtil redisUtil = new RedisUtil();
         String failNodeKey = columnKey + "-FAIL";
         //   查看是否有F根节点,没有则创建
@@ -84,7 +84,7 @@ public class IkRpDataTableRelationBasicServiceImpl implements IkRpDataTableRelat
      * @param comparisonColumnKey 对比目标字段,如: 1-1-1(数据源ID-数据表ID-数据项ID)
      * @param flag                比对结果,比对成功为true,比对失败为false
      */
-    public static void setComparisonFlag(String columnKey, String comparisonColumnKey, boolean flag) {
+    public void setComparisonFlag(String columnKey, String comparisonColumnKey, boolean flag) {
         boolean isComparisonFlag = getIsComparisonFlag(columnKey, comparisonColumnKey);
         System.out.println("------------开始--------------");
         System.out.println("是否需要比对:" + isComparisonFlag);
@@ -159,7 +159,7 @@ public class IkRpDataTableRelationBasicServiceImpl implements IkRpDataTableRelat
      *
      * @param redisUtil
      */
-    public static void createSuccessAndFailRelationKey(RedisUtil redisUtil) {
+    public void createSuccessAndFailRelationKey(RedisUtil redisUtil) {
         if (!redisUtil.isListExists(SUCCESS_KEY)) {// 检查key是否存在,如不存在则创建新list节点
             // 添加根节点
             redisUtil.addListNode(null, SUCCESS_KEY);

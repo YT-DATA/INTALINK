@@ -11,6 +11,7 @@ import com.intalink.configoperations.mapper.dataColumn.IkBpDataColumnBasicMapper
 import com.intalink.configoperations.mapper.dataSource.IkBpDataSourceBasicMapper;
 import com.intalink.configoperations.mapper.dataTable.IkBpDataTableBasicMapper;
 import com.intalink.configoperations.service.dataTableRelationBasic.impl.IkRpDataTableRelationBasicServiceImpl;
+import com.intalink.configoperations.service.eigenvalue.EigenvalueService;
 import com.intalink.configoperations.service.relationshipAnalysis.RelationshipAnalysisService;
 import com.intalink.configoperations.service.relationshipInput.impl.IkRpDataTableRelationServiceImpl;
 import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
@@ -19,9 +20,18 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import javax.annotation.Resource;
 import java.sql.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import com.intalink.configoperations.utils.DESUtils;
 
 @Service
 public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisService {
@@ -40,6 +50,9 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
     private static final int REDIS_PORT = 6379;               // Redis服务器端口
     private static final String REDIS_PASSWORD = "Liuzong123456.";
 
+    //
+    private static final String LOG_FILE_PATH = "service_log.txt"; // 日志文件路径
+
     @Autowired
     public IkBpDataSourceBasicMapper ikBpDataSourceBasicMapper;
     @Autowired
@@ -48,14 +61,17 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
     public IkBpDataColumnBasicMapper ikBpDataColumnBasicMapper;
     @Autowired
     public static IkRpDataTableRelationBasicServiceImpl ikRpDataTableRelationBasicService;
+    @Autowired
+    public EigenvalueService eigenvalueService;
+
+    @Autowired
 //    @Resource
 //    public static IkRpDataTableRelationServiceImpl ikRpDataTableRelationService;
 
 
     /**
      * 从redis当中获取全部的数据集
-     */
-    public static List<String> fetchRelationShipData(String dataSetKey) {
+     */ public static List<String> fetchRelationShipData(String dataSetKey) {
         List<String> dataList = new ArrayList<>();
         // 创建Jedis连接
         Jedis jedis = new Jedis(REDIS_HOST, REDIS_PORT);
@@ -67,10 +83,10 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
             // 获取数据集
             dataList = jedis.lrange(dataSetKey, 0, -1); // 如果是List类型
             // 打印数据
-            System.out.println("打印RelationShipData:");
-            for (String data : dataList) {
-                System.out.println(data);
-            }
+//            System.out.println("打印RelationShipData:");
+//            for (String data : dataList) {
+//                System.out.println(data);
+//            }
             // 关闭连接
             jedis.close();
             System.out.println("关闭链接");
@@ -107,6 +123,29 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
             System.err.println("链接失败，失败原因: " + e.getMessage());
         }
         return dataTable;
+    }
+
+    /**
+     * 根据key获取Set
+     *
+     * @param dataSetKey
+     * @return
+     */
+    public static Set<String> getSetByKey(String dataSetKey) {
+        Set<String> dataSourceKeySet = new HashSet<>();
+        // 创建Jedis连接
+        Jedis jedis = new Jedis(REDIS_HOST, REDIS_PORT);
+        try {
+            // 设置密码
+            jedis.auth(REDIS_PASSWORD);
+            // 获取 Redis 中键为 "dataSetKey" 的值
+            dataSourceKeySet = jedis.smembers(dataSetKey);
+            // 关闭连接
+            jedis.close();
+        } catch (Exception e) {
+            System.err.println("链接失败，失败原因: " + e.getMessage());
+        }
+        return dataSourceKeySet;
     }
 
     /**
@@ -168,15 +207,71 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
 
         //dataRelationShip();
 
-        dataItemOptimization("dataTable-11111394", "dataTable-11111285");
+        // 数据项优化
+        //dataItemOptimization("dataTable-11111394", "dataTable-11111285");
 
+        //全部数据源
+        //allDataSource();
+    }
+
+    public void getRedisInfo() {
+        //调用宏鑫的先补齐基础数据
+        eigenvalueService.putDataNew();
+    }
+
+
+    public void start() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        try (FileWriter fileWriter = new FileWriter(LOG_FILE_PATH, true); PrintWriter printWriter = new PrintWriter(fileWriter)) {
+
+            // 记录服务调用开始时间
+            LocalDateTime startTime = LocalDateTime.now();
+            printWriter.printf("开始服务调用: %s%n", startTime.format(formatter));
+
+            Thread thread1 = new Thread(this::getRedisInfo);
+            thread1.start();
+            thread1.join(); // 等待方法1完成
+            allDataSource(); // 在方法1完成后执行方法2
+
+            // 记录服务调用结束时间
+            LocalDateTime endTime = LocalDateTime.now();
+            printWriter.printf("服务调用结束: %s%n", endTime.format(formatter));
+            printWriter.println(); // 添加一个空行以便于日志阅读
+
+        } catch (IOException e) {
+            e.printStackTrace(); // 在控制台输出异常信息
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     */
+    public void allDataSource() {
+        //获取全部的数据源
+        Set<String> datasourceKeySet = getSetByKey("dataSource");
+        for (String datasourceKey : datasourceKeySet) {
+            System.out.println("当前数据源: " + datasourceKey);
+            //获取相应数据源下的数据表
+            Set<String> dataTableKeySet = getSetByKey(datasourceKey);
+            for (String dataTableKey : dataTableKeySet) {
+                for (String dataTableKey1 : dataTableKeySet) {
+                    if (!dataTableKey.equals(dataTableKey1)) {
+                        //循环比较数据项
+                        System.out.println("数据项: " + dataTableKey + " : " + dataTableKey1);
+                        dataItemOptimization(dataTableKey, dataTableKey1);
+                    }
+                }
+            }
+        }
     }
 
 
     /**
      * 数据关联分析
      */
-    public static void dataRelationShip() {
+    public void dataRelationShip() {
         // 假定当前redis当中存在两份数据集，一份为数据源-数据库-数据表-数据项
         // 另一份数据集为对应数据项的数据值
 //        dataSet: dataSource-database-table-dataItem
@@ -234,7 +329,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
     /**
      * 数据项优化
      */
-    public static void dataItemOptimization(String dataTableKey, String dataTable1Key) {
+    public void dataItemOptimization(String dataTableKey, String dataTable1Key) {
         //获取对应数据表的内容
         DataTable dataTable = fetchDataTable(dataTableKey);
         //获取dataTable1 的内容
@@ -276,7 +371,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
      * @param dataItemList1
      * @return
      */
-    public static List<DataItem> dataItemSort(DataItem dataItem, List<DataItem> dataItemList1) {
+    public List<DataItem> dataItemSort(DataItem dataItem, List<DataItem> dataItemList1) {
         // 使用 Comparator 对 dataItemList1 进行排序
         Collections.sort(dataItemList1, new Comparator<DataItem>() {
             @Override
@@ -311,7 +406,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
      * @param valueList
      * @param valueList1
      */
-    public static Boolean relationShipsAnalysis(String data, String data1, List<String> valueList, List<String> valueList1) {
+    public Boolean relationShipsAnalysis(String data, String data1, List<String> valueList, List<String> valueList1) {
         //定义关系数据集
         List<RelationShip> relationShipList = new ArrayList<>();
         boolean result = false;
@@ -352,18 +447,28 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                 int difference2Count = 0;
                 //列1同交集的差集大于0
                 if (difference1.size() > 0) {
+                    String dataSourceId = "";
+                    String tableId = "";
+                    String dataItemId = "";
+                    String dataValue = "";
+
+
                     //列1同交集的差集 到数据源库当中验证
                     for (String value : difference1) {
                         //验证列1同交集的差集 到数据源库当中验证
                         //设定value的规则为：数据源Id-数据表Id-数据项Id-数据值
 
                         //对关键数值进行截取
-                        String dataSourceId = data.split("-")[0];
-                        String tableId = data.split("-")[1];
-                        String dataItemId = data.split("-")[2];
-                        String dataValue = value;
-                        difference1Count += getRelationShip(dataSourceId, tableId, dataItemId, dataValue);
+                        dataSourceId = data.split("-")[0];
+                        tableId = data.split("-")[1];
+                        dataItemId = data.split("-")[2];
+                        if (dataValue.equals("")) {
+                            dataValue = value;
+                        } else {
+                            dataValue += "," + value;
+                        }
                     }
+                    difference1Count += getRelationShip(dataSourceId, tableId, dataItemId, dataValue);
                     //验证结果
                     if (difference1Count == difference1.size()) {
                         RelationShip relationShip = new RelationShip();
@@ -377,18 +482,27 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                 }
                 //列2同交集的差集大于0
                 if (difference2.size() > 0) {
+                    String dataSourceId = "";
+                    String tableId = "";
+                    String dataItemId = "";
+                    String dataValue = "";
                     //列1同交集的差集 到数据源库当中验证
                     for (String value : difference2) {
                         //验证列1同交集的差集 到数据源库当中验证
                         //设定value的规则为：数据源Id-数据表Id-数据项Id-数据值
 
                         //对关键数值进行截取
-                        String dataSourceId = data1.split("-")[0];
-                        String tableId = data1.split("-")[1];
-                        String dataItemId = data1.split("-")[2];
-                        String dataValue = value;
-                        difference2Count += getRelationShip(dataSourceId, tableId, dataItemId, dataValue);
+                        dataSourceId = data1.split("-")[0];
+                        tableId = data1.split("-")[1];
+                        dataItemId = data1.split("-")[2];
+                        if (dataValue.equals("")) {
+                            dataValue = value;
+                        } else {
+                            dataValue += "," + value;
+                        }
+
                     }
+                    difference2Count += getRelationShip(dataSourceId, tableId, dataItemId, dataValue);
                     //验证结果
                     if (difference2Count == difference2.size()) {
                         RelationShip relationShip = new RelationShip();
@@ -465,7 +579,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                 List<IkRpDataTableRelationVo> ikRpDataTableRelationVos = changeRelationShipToVo(relationShipList);
                 IkRpDataTableRelationServiceImpl ikRpDataTableRelationService = new IkRpDataTableRelationServiceImpl();
                 //存进数据库
-                //ikRpDataTableRelationService.insert(ikRpDataTableRelationVos);
+                ikRpDataTableRelationService.insert(ikRpDataTableRelationVos);
             }
         }
         return result;
@@ -477,7 +591,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
      * @param relationShipList
      * @return
      */
-    public static List<IkRpDataTableRelationVo> changeRelationShipToVo(List<RelationShip> relationShipList) {
+    public List<IkRpDataTableRelationVo> changeRelationShipToVo(List<RelationShip> relationShipList) {
         List<IkRpDataTableRelationVo> ikRpDataTableRelationVos = new ArrayList<>();
         for (RelationShip relationShip : relationShipList) {
             IkRpDataTableRelationVo ikRpDataTableRelationVo = new IkRpDataTableRelationVo();
@@ -498,7 +612,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
      * @param list2
      * @return
      */
-    public static Map<String, List<String>> calculateOperations(List<String> list1, List<String> list2) {
+    public Map<String, List<String>> calculateOperations(List<String> list1, List<String> list2) {
         Set<String> intersection = new HashSet<>(list1);
         intersection.retainAll(list2); // 交集
 
@@ -528,7 +642,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
      * @param dataValue
      * @return
      */
-    public static int getRelationShip(String dataSourceId, String dataTableId, String dataItemId, String dataValue) {
+    public int getRelationShip(String dataSourceId, String dataTableId, String dataItemId, String dataValue) {
         try {
             System.out.println("getRelationShip:" + dataSourceId + " " + dataTableId + " " + dataItemId + " " + dataValue);
             int result = 0;
@@ -540,7 +654,7 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                 IkBpDataTableBasic ikBpDataTableBasic = selectByDataTableId(Integer.parseInt(dataTableId));
                 //获取字段信息
                 IkBpDataColumnBasic ikBpDataColumnBasic = selectByTableIdAndColumnCode(Integer.parseInt(dataItemId));
-                String sqlstr = "select * from " + ikBpDataTableBasic.getDataTableName() + " where " + ikBpDataColumnBasic.getDataColumnName() + " = '" + dataValue + "'";
+                String sqlstr = "select Count(*) from " + ikBpDataTableBasic.getDataTableName() + " where " + ikBpDataColumnBasic.getDataColumnName() + " in('" + dataValue + "')";
                 //获取sql语句的执行结果
                 result = getSqlResult(sqlstr, ikBpDataSourceBasic.getUrl(), ikBpDataSourceBasic.getDatabaseType(), ikBpDataSourceBasic.getUserName(), ikBpDataSourceBasic.getPassword());
             }
@@ -561,17 +675,14 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
      * @param Password
      * @return
      */
-    public static int getSqlResult(String sqlstr, String dataSource, String dataSourceType, String userName, String Password) {
-
+    public int getSqlResult(String sqlstr, String dataSource, String dataSourceType, String userName, String Password) {
         // 数据库URL，用户名和密码
         String url = "";
-
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
         // 返回结果 默认不存在
         int result = 0;// 0：不存在，1：存在
-
         try {
             // 根据数据库类型加载不同的驱动
             switch (dataSourceType.toLowerCase()) {
@@ -591,21 +702,15 @@ public class RelationshipAnalysisServiceImpl implements RelationshipAnalysisServ
                     System.out.println("Unsupported database type");
                     return 0;
             }
-
             // 建立数据库连接
-            conn = DriverManager.getConnection(url, userName, Password);
-
+            conn = DriverManager.getConnection(url, userName, DESUtils.decrypt(Password));
             // 创建语句对象
             stmt = conn.createStatement();
-
             // 执行SQL查询
             rs = stmt.executeQuery(sqlstr);
-
             // 处理查询结果
             if (rs.next()) {
-                if (rs.getRow() > 0 && rs.getString(1) != null) {
-                    result = 1; // 存在
-                }
+                result = rs.getInt(1); // 获取结果集的第一列的整数值
             }
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();

@@ -14,6 +14,7 @@ public class RedisUtil {
 
     private static final String FATHER_PREFIX = "father:";
     private static final String CHILD_PREFIX = "child:";
+
     static {
         JedisPoolConfig poolConfig = new JedisPoolConfig();
         poolConfig.setMaxTotal(128);
@@ -30,12 +31,14 @@ public class RedisUtil {
     public static Jedis getJedis() {
         return jedisPool.getResource();
     }
+
     // 检查是否存在类型为 list 的节点  如没有则创建个空节点
     public boolean isListExists(String key) {
         try (Jedis jedis = RedisUtil.getJedis()) {
             return "list".equals(jedis.type(key));
         }
     }
+
     //创建一个空的list节点
     public void createListNode(String key) {
         try (Jedis jedis = RedisUtil.getJedis()) {
