@@ -102,6 +102,24 @@
             ik_bp_data_column_basic ibdcb
         where ibdcb.data_table_id = #{tableId}
     </select>
+    <select id="selectTableNumAndColumnNum" resultType="java.util.Map">
+        SELECT
+            (SELECT COUNT(*)
+             FROM ik_bp_data_column_basic ibdcb
+                      LEFT JOIN ik_bp_data_table_basic ibdtb ON ibdtb.data_table_id = ibdcb.data_table_id
+                      LEFT JOIN ik_bp_data_model_basic ibdmb ON ibdmb.data_model_id = ibdtb.data_model_id
+                      LEFT JOIN ik_bp_data_source_data_model_relation_basic ibdsdmrb ON ibdsdmrb.data_model_id = ibdmb.data_model_id
+                      LEFT JOIN ik_bp_data_source_system_relation_basic ibdssrb ON ibdssrb.system_id = ibdsdmrb.system_id
+             WHERE ibdssrb.datasource_id = #{dataSourceId}) AS columnNum,
+            (SELECT COUNT(*)
+             FROM ik_bp_data_table_basic ibdtb
+                      LEFT JOIN ik_bp_data_model_basic ibdmb ON ibdmb.data_model_id = ibdtb.data_model_id
+                      LEFT JOIN ik_bp_data_source_data_model_relation_basic ibdsdmrb ON ibdsdmrb.data_model_id = ibdmb.data_model_id
+                      LEFT JOIN ik_bp_data_source_system_relation_basic ibdssrb ON ibdssrb.system_id = ibdsdmrb.system_id
+             WHERE ibdssrb.datasource_id = #{dataSourceId}
+             GROUP BY ibdssrb.datasource_id) AS tableNum;
+
+    </select>
 
 
 </mapper>

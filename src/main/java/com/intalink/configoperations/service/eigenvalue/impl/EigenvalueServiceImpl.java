@@ -21,7 +21,11 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisDataException;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Type;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,6 +40,8 @@ public class EigenvalueServiceImpl implements EigenvalueService {
 
     @Autowired
     public IkBpDataSourceBasicMapper ikBpDataSourceBasicMapper;
+
+    private static final String LOG_FILE_PATH = "tableAndColumnNum_log.txt"; // 日志文件路径
 
     public Jedis jedis = RedisUtil.getJedis();
 
@@ -97,27 +103,50 @@ public class EigenvalueServiceImpl implements EigenvalueService {
      * @param jedis
      */
     private void addDataSource(List<Integer> dataSourceIds, Jedis jedis) {
-        for (Integer dataSourceId : dataSourceIds) {
-
-            // 根据数据源id获取数据对应信息
-            IkBpDataSourceBasic dataSource = getDataSource(dataSourceId);
-            // 重新定义Value的格式
-            if (dataSource != null && dataSource.getDataSourceId() != null) {
-                String newDataSourceValue = "dataSource-" + dataSource.getDataSourceId();
-                // 判断新数据源值是否存在
-                boolean memberExists = jedis.sismember("dataSource", newDataSourceValue);
-                // 如果新数据不存在，则插入新数据
-                if (!memberExists) {
-                    jedis.sadd("dataSource", newDataSourceValue);
-                    //  第二层需要 数据源的Value  作为数据表信息的key  value  dataTable-  加上数据表的id
-                    // 第二层是 数据表信息  key:value  String:List<String>    dataSource-21:[dataTable-10, dataTable-11]
-                    // 添加第二层信息
-                    // 根据数据源获取所有表和列的信息
-                    List<Map<String, Object>> tableAndColomnByDataSourceId = getTableAndColomnByDataSourceId(dataSourceId);
-                    addDataTable(newDataSourceValue, tableAndColomnByDataSourceId, jedis);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        try (FileWriter fileWriter = new FileWriter(LOG_FILE_PATH, true); PrintWriter printWriter = new PrintWriter(fileWriter)) {
+            String tableNum = "0";
+            String columnNum = "0";
+            for (Integer dataSourceId : dataSourceIds) {
+                // 根据数据源id获取对应的数据表和数据项的数量
+                Map<String, Object> tableAndColumnNum = getTableAndColumnNum(dataSourceId);
+                if (tableAndColumnNum != null) {
+                    tableNum = tableAndColumnNum.get("tableNum").toString();
+                    columnNum = tableAndColumnNum.get("columnNum").toString();
                 }
+                // 根据数据源id获取数据对应信息
+                IkBpDataSourceBasic dataSource = getDataSource(dataSourceId);
+                // 重新定义Value的格式
+                if (dataSource != null && dataSource.getDataSourceId() != null) {
+                    String newDataSourceValue = "dataSource-" + dataSource.getDataSourceId();
+                    // 判断新数据源值是否存在
+                    boolean memberExists = jedis.sismember("dataSource", newDataSourceValue);
+                    // 如果新数据不存在，则插入新数据
+                    if (!memberExists) {
+                        jedis.sadd("dataSource", newDataSourceValue);
+                        //  第二层需要 数据源的Value  作为数据表信息的key  value  dataTable-  加上数据表的id
+                        // 第二层是 数据表信息  key:value  String:List<String>    dataSource-21:[dataTable-10, dataTable-11]
+                        // 添加第二层信息
+                        // 根据数据源获取所有表和列的信息
+                        List<Map<String, Object>> tableAndColomnByDataSourceId = getTableAndColomnByDataSourceId(dataSourceId);
+                        addDataTable(newDataSourceValue, tableAndColomnByDataSourceId, jedis);
+                    }
+                }
+                printWriter.println("数据源：" + dataSourceId + "，数据表数量：" + tableNum + "，数据项数量：" + columnNum + "");
             }
+        }catch (IOException e) {
+            e.printStackTrace(); // 在控制台输出异常信息
         }
+    }
+
+    /**
+     * 根据数据源id获取对应的数据表和数据项的数量
+     * @param dataSourceId
+     * @return
+     */
+    private Map<String, Object> getTableAndColumnNum(Integer dataSourceId) {
+        Map<String, Object> map = ikBpDataSourceBasicMapper.selectTableNumAndColumnNum(dataSourceId);
+        return map;
     }
 
     /**
