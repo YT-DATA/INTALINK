@@ -246,16 +246,27 @@ public class EigenvalueServiceImpl implements EigenvalueService {
             columnName = maps.get(0).get("data_column_code").toString();
             rowNum = maps.get(0).get("data_length").toString();
 
-            // 根据数据源id获取数据对应信息   Map< 数据源id-数据表id-数据项id , 特征值 >
-            for (Map.Entry<String, List<String>> entry : getEigenvalueKeyNew(rowNum, tableName, columnName, sDsnaDsSettingNew, ikBpDataSourceBasic).entrySet()) {
-                String key = entry.getKey();
-                List<String> values = entry.getValue();
-                // 将 values 转换为数组以便存储
-                String[] valuesArray = values.toArray(new String[0]);
-                eigenvalueNum = String.valueOf(valuesArray.length);
-                // 将 key-value 存入 Redis，使用 Redis 的列表（List）结构
-                jedis.lpush(key, valuesArray);
+            // 'decimal','date','datetime','time','boolean'
+            if (!"decimal".equals(maps.get(0).get("data_type")) &&
+                    !"date".equals(maps.get(0).get("data_type")) &&
+                    !"datetime".equals(maps.get(0).get("data_type")) &&
+                    !"time".equals(maps.get(0).get("data_type")) &&
+                    !"boolean".equals(maps.get(0).get("data_type"))&&
+                    !"timestamp".equals(maps.get(0).get("data_type")) &&
+                    !maps.get(0).get("data_type").toString().contains("tinyint")
+            ){
+                // 根据数据源id获取数据对应信息   Map< 数据源id-数据表id-数据项id , 特征值 >
+                for (Map.Entry<String, List<String>> entry : getEigenvalueKeyNew(rowNum, tableName, columnName, sDsnaDsSettingNew, ikBpDataSourceBasic).entrySet()) {
+                    String key = entry.getKey();
+                    List<String> values = entry.getValue();
+                    // 将 values 转换为数组以便存储
+                    String[] valuesArray = values.toArray(new String[0]);
+                    eigenvalueNum = String.valueOf(valuesArray.length);
+                    // 将 key-value 存入 Redis，使用 Redis 的列表（List）结构
+                    jedis.lpush(key, valuesArray);
+                }
             }
+
         }
         return eigenvalueNum;
     }
