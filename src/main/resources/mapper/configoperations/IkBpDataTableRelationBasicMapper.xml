@@ -12,10 +12,22 @@
     <sql id="Base_Column_List">
         relation_id,relation_type,relation_describe
     </sql>
+    <insert id="insertEigenvalueSuccessLink" parameterType="com.intalink.configoperations.domain.dataTableRelationBasic.EigenvalueSuccessLinkEntity">
+        INSERT INTO eigenvalue_success_link (success_key, eigenvalue_key) VALUES (#{successKey}, #{eigenvalueKey});
+    </insert>
+    <update id="updateEigenvalueSuccessLink" parameterType="com.intalink.configoperations.domain.dataTableRelationBasic.EigenvalueSuccessLinkEntity">
+        UPDATE eigenvalue_success_link  set eigenvalue_key=#{eigenvalueKey}
+        where success_key=#{successKey}
+    </update>
 
     <select id="selectAll"
             resultType="com.intalink.configoperations.domain.dataTableRelationBasic.IkBpDataTableRelationBasic">
         select * from ik_bp_data_table_relation_basic group by relation_id
+    </select>
+    <select id="searchEigenvalueSuccessLink"
+            resultType="com.intalink.configoperations.domain.dataTableRelationBasic.EigenvalueSuccessLinkEntity">
+
+                select success_key,eigenvalue_key from eigenvalue_success_link where success_key = #{successKey}
     </select>
 
 </mapper>

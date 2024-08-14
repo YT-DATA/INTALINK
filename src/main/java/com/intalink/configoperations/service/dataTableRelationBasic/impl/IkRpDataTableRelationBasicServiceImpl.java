@@ -1,13 +1,17 @@
 package com.intalink.configoperations.service.dataTableRelationBasic.impl;
 
+import com.intalink.configoperations.domain.dataTableRelationBasic.EigenvalueSuccessLinkEntity;
+import com.intalink.configoperations.mapper.dataTableRelationBasic.IkBpDataTableRelationBasicMapper;
 import com.intalink.configoperations.service.dataTableRelationBasic.IkRpDataTableRelationBasicService;
 import com.intalink.configoperations.utils.RedisUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Protocol;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +23,9 @@ import java.util.Set;
 public class IkRpDataTableRelationBasicServiceImpl implements IkRpDataTableRelationBasicService {
     private static final String SUCCESS_KEY = "relationSuccess";//对比成功数据存放的key
     private static final String FAIL_KEY = "relationFail";//对比失败数据存放的key
+
+    @Resource
+    IkBpDataTableRelationBasicMapper ikBpDataTableRelationBasicMapper;
 
     public static void main(String[] args) {
         IkRpDataTableRelationBasicServiceImpl test = new IkRpDataTableRelationBasicServiceImpl();
@@ -85,15 +92,6 @@ public class IkRpDataTableRelationBasicServiceImpl implements IkRpDataTableRelat
      * @param flag                比对结果,比对成功为true,比对失败为false
      */
     public void setComparisonFlag(String columnKey, String comparisonColumnKey, boolean flag) {
-        boolean isComparisonFlag = getIsComparisonFlag(columnKey, comparisonColumnKey);
-        System.out.println("------------开始--------------");
-        System.out.println("是否需要比对:" + isComparisonFlag);
-        System.out.println("对比字段:" + columnKey);
-        System.out.println("目标字段:" + comparisonColumnKey);
-        System.out.println("------------结束--------------");
-        if (!isComparisonFlag) {
-            return;
-        }
         RedisUtil redisUtil = new RedisUtil();
         String failNodeKey = columnKey + "-FAIL";
         String successNodeKey = columnKey + "-SUCCESS";
@@ -121,6 +119,36 @@ public class IkRpDataTableRelationBasicServiceImpl implements IkRpDataTableRelat
             if (redisUtil.isListExists(comparisonColumnKey + "-FAIL")) {// 检查key是否存在,如不存在则不需操作
                 //查询该节点下所有数据,这些数据之后都不需要与columnKey进行比对
                 addFailList = redisUtil.fetchAllFromList(comparisonColumnKey + "-FAIL");
+            }
+            /** 删除特征值KEY  */
+            //获取对比目标字段成功池key
+            String comparisonColumnSuccessKey = redisUtil.findKeyByValue(comparisonColumnKey, SUCCESS_KEY);
+            String comparisonColumnEigenvalueKey = comparisonColumnKey;//对比目标字段特征值key
+            String columnEigenvalueKey = columnKey;//当前字段特征值key
+            boolean addOrUpdateFlag = false;//新增或修改成功池与特征值关联表数据判断   默认新增
+            if(comparisonColumnSuccessKey!=null){//如果不为空,需要去库里查询该成功池对应的特征值的key
+               comparisonColumnEigenvalueKey = ikBpDataTableRelationBasicMapper.searchEigenvalueSuccessLink(comparisonColumnSuccessKey).getEigenvalueKey();
+                addOrUpdateFlag=true;
+            }
+            EigenvalueSuccessLinkEntity eigenvalueSuccessLinkEntity = new EigenvalueSuccessLinkEntity();
+            eigenvalueSuccessLinkEntity.setSuccessKey(successNodeKey);
+            //查看哪个特征值中内容更多
+            if(redisUtil.fetchAllFromList(comparisonColumnEigenvalueKey).size() < redisUtil.fetchAllFromList(columnEigenvalueKey).size()){
+                //删除特征值较少的那个key
+                redisUtil.removeRedisNode(comparisonColumnEigenvalueKey);
+                eigenvalueSuccessLinkEntity.setEigenvalueKey(columnEigenvalueKey);
+                if(addOrUpdateFlag){//修改成功池与特征值关联表数据
+                    ikBpDataTableRelationBasicMapper.updateEigenvalueSuccessLink(eigenvalueSuccessLinkEntity);
+                }else{//新增修改成功池与特征值关联表数据
+                    ikBpDataTableRelationBasicMapper.insertEigenvalueSuccessLink(eigenvalueSuccessLinkEntity);
+                }
+            }else{
+                //删除特征值较少的那个key
+                redisUtil.removeRedisNode(columnEigenvalueKey);
+                eigenvalueSuccessLinkEntity.setEigenvalueKey(comparisonColumnEigenvalueKey);
+                if(!addOrUpdateFlag){//新增修改成功池与特征值关联表数据
+                    ikBpDataTableRelationBasicMapper.insertEigenvalueSuccessLink(eigenvalueSuccessLinkEntity);
+                }
             }
         } else {
             // 查看comparisonColumnKey是否有比对成功的点,并查询出来
@@ -151,6 +179,23 @@ public class IkRpDataTableRelationBasicServiceImpl implements IkRpDataTableRelat
             //  添加比对成功的节点值
             redisUtil.batchInsertToList(successNodeKey, addSuccessList);
         }
+    }
+
+    @Override
+    public String getEigenvalueBySourceTableColumn(String columnKey) {
+        RedisUtil redisUtil = new RedisUtil();
+        //获取查询字段成功池key
+        String successKey = redisUtil.findKeyByValue(columnKey, SUCCESS_KEY);
+        if (successKey != null) {
+            //如果不为空,需要去库里查询该成功池对应的特征值的key
+            String comparisonColumnEigenvalueKey = ikBpDataTableRelationBasicMapper.searchEigenvalueSuccessLink(successKey).getEigenvalueKey();
+            if(comparisonColumnEigenvalueKey != null && !"".equals(comparisonColumnEigenvalueKey)){
+                return comparisonColumnEigenvalueKey;
+            }else{
+                return null;
+            }
+        }
+        return null;
     }
 
 

@@ -170,6 +170,15 @@ public class RedisUtil {
     }
 
 
+    public static void removeRedisNode(String key){
+        try (Jedis jedis = jedisPool.getResource()) {
+            jedis.del(key);
+            closeJedisCon(jedis);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 检查Redis列表是否包含指定的值
      *
