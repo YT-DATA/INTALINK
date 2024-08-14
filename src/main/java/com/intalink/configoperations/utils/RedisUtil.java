@@ -33,7 +33,9 @@ public class RedisUtil {
     // 检查是否存在类型为 list 的节点  如没有则创建个空节点
     public boolean isListExists(String key) {
         try (Jedis jedis = RedisUtil.getJedis()) {
-            return "list".equals(jedis.type(key));
+            boolean isListExists = "list".equals(jedis.type(key));
+            closeJedisCon(jedis);
+            return isListExists;
         }
     }
     //创建一个空的list节点
@@ -44,6 +46,7 @@ public class RedisUtil {
 
             // 删除临时元素
             jedis.lpop(key);// 移除初始值，保持 list 为空
+            closeJedisCon(jedis);
         }
     }
 
@@ -66,6 +69,7 @@ public class RedisUtil {
             if (parentKey != null) {
                 jedis.sadd(parentKey + ":children", key);
             }
+            closeJedisCon(jedis);
         }
     }
 
@@ -80,6 +84,7 @@ public class RedisUtil {
             }
             jedis.del(key + ":list"); // 删除列表
             jedis.del(key + ":children");
+            closeJedisCon(jedis);
         }
     }
 
@@ -87,6 +92,7 @@ public class RedisUtil {
     public void addToList(String key, String value) {
         try (Jedis jedis = RedisUtil.getJedis()) {
             jedis.rpush(key + ":list", value); // 添加列表元素
+            closeJedisCon(jedis);
         }
     }
 
@@ -94,6 +100,7 @@ public class RedisUtil {
     public void removeFromList(String key, String value) {
         try (Jedis jedis = RedisUtil.getJedis()) {
             jedis.lrem(key + ":list", 1, value); // 删除列表中的元素
+            closeJedisCon(jedis);
         }
     }
 
@@ -110,6 +117,7 @@ public class RedisUtil {
                     return childKey;
                 }
             }
+            closeJedisCon(jedis);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -124,7 +132,9 @@ public class RedisUtil {
     public  List<String> fetchAllFromList(String listKey) {
         try (Jedis jedis = RedisUtil.getJedis()) {
             // 使用LRANGE命令获取所有元素
-            return jedis.lrange(listKey, 0, -1);
+            List<String> values = jedis.lrange(listKey, 0, -1);
+            closeJedisCon(jedis);
+            return values ;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -142,9 +152,18 @@ public class RedisUtil {
             String[] valuesArray = values.toArray(new String[0]);
             // 使用RPUSH添加数据
             jedis.rpush(listKey, valuesArray);
+            closeJedisCon(jedis);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 关闭jedis链接
+     * @param jedis
+     */
+    public static void closeJedisCon(Jedis jedis){
+        jedis.close();
     }
 
 
@@ -158,7 +177,8 @@ public class RedisUtil {
     public static boolean isValueInList(String listKey, String value) {
         try (Jedis jedis = RedisUtil.getJedis()) {
             // 获取列表的所有元素
-            java.util.List<String> list = jedis.lrange(listKey, 0, -1);
+            List<String> list = jedis.lrange(listKey, 0, -1);
+            closeJedisCon(jedis);
             // 检查列表是否包含指定的值
             return list.contains(value);
         } catch (Exception e) {
