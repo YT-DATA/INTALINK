@@ -2,20 +2,30 @@ package com.intalink.configoperations.service.eigenvalue.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.intalink.configoperations.domain.dataSource.IkBpDataSourceBasic;
-import com.intalink.configoperations.domain.dataSource.SDsnaDsSettingNew;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import com.intalink.configoperations.domain.dataRelationShip.vo.DataItem;
 import com.intalink.configoperations.domain.dataRelationShip.vo.DataTable;
+import com.intalink.configoperations.domain.dataSource.IkBpDataSourceBasic;
+import com.intalink.configoperations.domain.dataSource.SDsnaDsSettingNew;
 import com.intalink.configoperations.mapper.dataSource.IkBpDataSourceBasicMapper;
 import com.intalink.configoperations.service.eigenvalue.EigenvalueService;
+import com.intalink.configoperations.utils.DESUtils;
 import com.intalink.configoperations.utils.DataSourceUtil;
+import com.intalink.configoperations.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisDataException;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.reflect.Type;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,19 +41,23 @@ public class EigenvalueServiceImpl implements EigenvalueService {
     @Autowired
     public IkBpDataSourceBasicMapper ikBpDataSourceBasicMapper;
 
-    public Jedis getJedis() {
-//        Jedis jedis = new Jedis("39.106.28.179", 6379);
-        Jedis jedis = new Jedis("localhost", 6379);
-//        jedis.auth("Liuzong123456.");
-        return jedis;
-    }
+    private static final String LOG_FILE_PATH = "tableAndColumnNum_log.txt"; // 日志文件路径
+
+    public Jedis jedis = RedisUtil.getJedis();
+
+//    public Jedis getJedis() {
+////        Jedis jedis = new Jedis("39.106.28.179", 6379);
+//        Jedis jedis = new Jedis("localhost", 6379);
+////        jedis.auth("Liuzong123456.");
+//        return jedis;
+//    }
 
     /**
      * 将指定数据源数据存入Redis
      */
     public void putData(List<Integer> dataSourceIds) {
 
-        Jedis jedis = getJedis();
+//        Jedis jedis = getJedis();
 
         //  根据数据源id获取数据对应信息
         if (dataSourceIds != null && dataSourceIds.size() > 0) {
@@ -51,8 +65,35 @@ public class EigenvalueServiceImpl implements EigenvalueService {
             deleteByDataSourceId(dataSourceIds, jedis);
             //将这些数据源Id进行字符串拼接存入Redis 对应的Key是 dataSource
             addDataSource(dataSourceIds, jedis);
+            System.out.println("数据源信息存入Redis成功");
         }
         jedis.close();
+    }
+
+    /**
+     * 将指定数据源数据存入Redis
+     */
+    public int putDataNew() {
+        try {
+//            Jedis jedis = getJedis();
+            List<IkBpDataSourceBasic> ikBpDataSourceBasics = ikBpDataSourceBasicMapper.selectAll();
+            List<Integer> dataSourceIds = ikBpDataSourceBasics.stream().map(IkBpDataSourceBasic::getDataSourceId).collect(Collectors.toList());
+
+            //  根据数据源id获取数据对应信息
+            if (dataSourceIds != null && dataSourceIds.size() > 0) {
+                // 删除这些数据源相关的信息
+                System.out.println("开始删除redis中相关的数据");
+                deleteByDataSourceId(dataSourceIds, jedis);
+                //将这些数据源Id进行字符串拼接存入Redis 对应的Key是 dataSource
+                addDataSource(dataSourceIds, jedis);
+                System.out.println("数据源信息存入Redis成功");
+            }
+            jedis.close();
+            return 0;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return 1;
     }
 
     /**
@@ -62,27 +103,50 @@ public class EigenvalueServiceImpl implements EigenvalueService {
      * @param jedis
      */
     private void addDataSource(List<Integer> dataSourceIds, Jedis jedis) {
-        for (Integer dataSourceId : dataSourceIds) {
-
-            // 根据数据源id获取数据对应信息
-            IkBpDataSourceBasic dataSource = getDataSource(dataSourceId);
-            // 重新定义Value的格式
-            if (dataSource != null && dataSource.getDataSourceId() != null) {
-                String newDataSourceValue = "dataSource-" + dataSource.getDataSourceId();
-                // 判断新数据源值是否存在
-                boolean memberExists = jedis.sismember("dataSource", newDataSourceValue);
-                // 如果新数据不存在，则插入新数据
-                if (!memberExists) {
-                    jedis.sadd("dataSource", newDataSourceValue);
-                    //  第二层需要 数据源的Value  作为数据表信息的key  value  dataTable-  加上数据表的id
-                    // 第二层是 数据表信息  key:value  String:List<String>    dataSource-21:[dataTable-10, dataTable-11]
-                    // 添加第二层信息
-                    // 根据数据源获取所有表和列的信息
-                    List<Map<String, Object>> tableAndColomnByDataSourceId = getTableAndColomnByDataSourceId(dataSourceId);
-                    addDataTable(newDataSourceValue, tableAndColomnByDataSourceId, jedis);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        try (FileWriter fileWriter = new FileWriter(LOG_FILE_PATH, true); PrintWriter printWriter = new PrintWriter(fileWriter)) {
+            String tableNum = "0";
+            String columnNum = "0";
+            for (Integer dataSourceId : dataSourceIds) {
+                // 根据数据源id获取对应的数据表和数据项的数量
+                Map<String, Object> tableAndColumnNum = getTableAndColumnNum(dataSourceId);
+                if (tableAndColumnNum != null) {
+                    tableNum = tableAndColumnNum.get("tableNum").toString();
+                    columnNum = tableAndColumnNum.get("columnNum").toString();
                 }
+                // 根据数据源id获取数据对应信息
+                IkBpDataSourceBasic dataSource = getDataSource(dataSourceId);
+                // 重新定义Value的格式
+                if (dataSource != null && dataSource.getDataSourceId() != null) {
+                    String newDataSourceValue = "dataSource-" + dataSource.getDataSourceId();
+                    // 判断新数据源值是否存在
+                    boolean memberExists = jedis.sismember("dataSource", newDataSourceValue);
+                    // 如果新数据不存在，则插入新数据
+                    if (!memberExists) {
+                        jedis.sadd("dataSource", newDataSourceValue);
+                        //  第二层需要 数据源的Value  作为数据表信息的key  value  dataTable-  加上数据表的id
+                        // 第二层是 数据表信息  key:value  String:List<String>    dataSource-21:[dataTable-10, dataTable-11]
+                        // 添加第二层信息
+                        // 根据数据源获取所有表和列的信息
+                        List<Map<String, Object>> tableAndColomnByDataSourceId = getTableAndColomnByDataSourceId(dataSourceId);
+                        addDataTable(newDataSourceValue, tableAndColomnByDataSourceId, jedis);
+                    }
+                }
+                printWriter.println("数据源：" + dataSourceId + "，数据表数量：" + tableNum + "，数据项数量：" + columnNum + "");
             }
+        }catch (IOException e) {
+            e.printStackTrace(); // 在控制台输出异常信息
         }
+    }
+
+    /**
+     * 根据数据源id获取对应的数据表和数据项的数量
+     * @param dataSourceId
+     * @return
+     */
+    private Map<String, Object> getTableAndColumnNum(Integer dataSourceId) {
+        Map<String, Object> map = ikBpDataSourceBasicMapper.selectTableNumAndColumnNum(dataSourceId);
+        return map;
     }
 
     /**
@@ -95,7 +159,7 @@ public class EigenvalueServiceImpl implements EigenvalueService {
         // 根据数据源获取所有表和列的信息
         Set<String> table = new HashSet<>();
         for (Map<String, Object> stringObjectMap : tableAndColomnByDataSourceId) {
-            System.out.println(stringObjectMap.get("data_table_id"));
+//            System.out.println(stringObjectMap.get("data_table_id"));
             String newRedisTableValue = "dataTable-" + stringObjectMap.get("data_table_id").toString();
             boolean memberExists = jedis.sismember(newDataSourceValue, newRedisTableValue);
             if (!memberExists) {
@@ -132,14 +196,15 @@ public class EigenvalueServiceImpl implements EigenvalueService {
      */
     private void addDataColumn(Set<String> tableAndColomnByDataSourceData, String newDataSourceValue, Jedis jedis) {
         String[] split = newDataSourceValue.split("-");
-        List<DataItem> dataItems = new ArrayList<>();
+
         for (String tableId : tableAndColomnByDataSourceData) {
+            List<DataItem> dataItems = new ArrayList<>();
             // 根据TableID获取所有列的信息
-            List<Map<String,Object>> maps =  ikBpDataSourceBasicMapper.selectByTableId(tableId);
-            DataItem dataItem = new DataItem();
+            List<Map<String, Object>> maps = ikBpDataSourceBasicMapper.selectByTableId(tableId);
             // "dataItem":"11-12-13"
 
             for (Map<String, Object> tableAndColomnByDataSourceDatum : maps) {
+                DataItem dataItem = new DataItem();
                 dataItem.setDataItem(split[1] + "-" + tableId + "-" + tableAndColomnByDataSourceDatum.get("data_column_id").toString());
                 if (tableAndColomnByDataSourceDatum.get("data_type") != null && tableAndColomnByDataSourceDatum.get("data_type") != "") {
                     String[] split1 = tableAndColomnByDataSourceDatum.get("data_type").toString().split("\\(");
@@ -207,17 +272,42 @@ public class EigenvalueServiceImpl implements EigenvalueService {
             tableName = maps.get(0).get("data_table_code").toString();
             columnName = maps.get(0).get("data_column_code").toString();
             rowNum = maps.get(0).get("data_length").toString();
+            System.out.println(maps.get(0).get("data_type"));
+            if (maps.get(0).get("data_type") != null && maps.get(0).get("data_type") != "") {
+                // 'decimal','date','datetime','time','boolean'
+                if (!"decimal".equals(maps.get(0).get("data_type")) &&
+                        !"date".equals(maps.get(0).get("data_type")) &&
+                        !"datetime".equals(maps.get(0).get("data_type")) &&
+                        !"time".equals(maps.get(0).get("data_type")) &&
+                        !"boolean".equals(maps.get(0).get("data_type")) &&
+                        !"timestamp".equals(maps.get(0).get("data_type")) &&
+                        !"int".equals(maps.get(0).get("data_type")) &&
+                        !"int".equals(maps.get(0).get("data_type")) &&
+                        !maps.get(0).get("data_type").toString().contains("tinyint")
+                ) {
 
-            // 根据数据源id获取数据对应信息   Map< 数据源id-数据表id-数据项id , 特征值 >
-            for (Map.Entry<String, List<String>> entry : getEigenvalueKeyNew(rowNum, tableName, columnName, sDsnaDsSettingNew, ikBpDataSourceBasic).entrySet()) {
-                String key = entry.getKey();
-                List<String> values = entry.getValue();
-                // 将 values 转换为数组以便存储
-                String[] valuesArray = values.toArray(new String[0]);
-                eigenvalueNum = String.valueOf(valuesArray.length);
-                // 将 key-value 存入 Redis，使用 Redis 的列表（List）结构
-                jedis.lpush(key, valuesArray);
+                    // 如果rowNum等于0的话，则获取这个表的总数量
+                    if (rowNum.equals("0")) {
+                        Set<LinkedHashMap<String, Object>> dataByIkBpDataSourceBasic = getDataByIkBpDataSourceBasic(ikBpDataSourceBasic, tableName, columnName);
+                        for (LinkedHashMap<String, Object> stringObjectLinkedHashMap : dataByIkBpDataSourceBasic) {
+                            if (stringObjectLinkedHashMap.get("TABLE_ROWS") != null)
+                                rowNum = stringObjectLinkedHashMap.get("TABLE_ROWS").toString();
+                        }
+                    }
+                    // 根据数据源id获取数据对应信息   Map< 数据源id-数据表id-数据项id , 特征值 >
+                    for (Map.Entry<String, List<String>> entry : getEigenvalueKeyNew(rowNum, tableName, columnName, sDsnaDsSettingNew, ikBpDataSourceBasic).entrySet()) {
+                        String key = entry.getKey();
+                        List<String> values = entry.getValue();
+                        // 将 values 转换为数组以便存储
+                        String[] valuesArray = values.toArray(new String[0]);
+                        eigenvalueNum = String.valueOf(valuesArray.length);
+                        // 将 key-value 存入 Redis，使用 Redis 的列表（List）结构
+                        jedis.lpush(key, valuesArray);
+                    }
+                }
+
             }
+
         }
         return eigenvalueNum;
     }
@@ -249,6 +339,7 @@ public class EigenvalueServiceImpl implements EigenvalueService {
                 deleteRedisDataByDataSourceKey(jedis, element);
             }
         } catch (JedisDataException e) {
+            System.out.println("redis删除数据失败错误信息：" + e);
             System.out.println("删除Redis数据失败");
         }
     }
@@ -293,23 +384,51 @@ public class EigenvalueServiceImpl implements EigenvalueService {
      */
     private void deleteDataColumns(Jedis jedis, String dataTable) {
         // 获取第三层的所有数据项名称
-        Set<String> dataColumns = jedis.smembers(dataTable);
+        String redisDataByRedisKey = getRedisDataByRedisKey(jedis, dataTable);
+        if (redisDataByRedisKey != null && redisDataByRedisKey.length() > 0 && !"Unsupported data type".equals(redisDataByRedisKey)) {
+            // 创建 JsonParser 对象
+            JsonParser parser = new JsonParser();
+            // 解析 JSON 字符串
+            JsonElement jsonElement = parser.parse(redisDataByRedisKey);
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            Gson gson = new Gson();
+            Type type = new TypeToken<List<Map<String, Object>>>() {
+            }.getType();
+            List<Map<String, Object>> dataList = gson.fromJson(jsonObject.get("dataItem"), type);
 
-        for (String dataColumn : dataColumns) {
-            String jsonDataFromRedis = jedis.hget(dataTable, "1");
-            if (jsonDataFromRedis != null) {
-                JSONObject jsonObject = new JSONObject(jsonDataFromRedis);
-                // 获取 dataItem0011 数组，并遍历其中的对象
-                JSONArray dataItems = jsonObject.getJSONArray("dataItem");
-                for (int i = 0; i < dataItems.length(); i++) {
-                    JSONObject item = dataItems.getJSONObject(i);
-                    String dataItem = item.getString("dataItem");
-                    // 删除第四层数据
-                    deleteEigenvalue(jedis, dataItem);
-                }
-                // 删除第三层数据
-                jedis.hdel(dataTable, "1");
+            List<String> dataItems = new ArrayList<>();
+            for (Map<String, Object> item : dataList) {
+                //  删除第五层数据项中dataItemValue为key对应的数据
+                deleteEigenvalue(jedis, (String) item.get("dataItem"));
             }
+            jedis.del(dataTable);
+        }
+    }
+
+    /**
+     * 根据rediskey的类型获取数据
+     */
+    private String getRedisDataByRedisKey(Jedis jedis, String redisKey) {
+        try {
+            // 检查数据类型
+            String type = jedis.type(redisKey);
+            switch (type) {
+                case "string":
+                    return jedis.get(redisKey);
+                case "list":
+                    return jedis.lrange(redisKey, 0, -1).toString();
+                case "set":
+                    return jedis.smembers(redisKey).toString();
+                case "zset":
+                    return jedis.zrange(redisKey, 0, -1).toString();
+                case "hash":
+                    return jedis.hgetAll(redisKey).toString();
+                default:
+                    return "Unsupported data type";
+            }
+        } catch (JedisDataException e) {
+            // 捕获异常并处理
+            return "Error: " + e.getMessage();
         }
     }
 
@@ -356,8 +475,10 @@ public class EigenvalueServiceImpl implements EigenvalueService {
             sDsnaDsSettingNew.setIp(host);
             sDsnaDsSettingNew.setPort(port);
             sDsnaDsSettingNew.setDatabaseName(database);
-            sDsnaDsSettingNew.setDatasourceUser("root");
-            sDsnaDsSettingNew.setDatasourcePass("Liuzong123456.");
+//            sDsnaDsSettingNew.setDatasourceUser("root");
+//            sDsnaDsSettingNew.setDatasourcePass("Liuzong123456.");
+            sDsnaDsSettingNew.setDatasourceUser(ikBpDataSourceBasic.getUserName());
+            sDsnaDsSettingNew.setDatasourcePass(DESUtils.decrypt(ikBpDataSourceBasic.getPassword()));
             // 连接方式(0：服务名，1：SID )  当数据库类型为Oracle时，该属性才有值
             // SID (当数据源类型为Oracle且连接方式为SID时，该属性才有值)
             if (ikBpDataSourceBasic.getDatabaseType().equals("oracle")) {
@@ -377,7 +498,7 @@ public class EigenvalueServiceImpl implements EigenvalueService {
      * @param ikBpDataSourceBasic
      * @return
      */
-    private Set<LinkedHashMap<String, Object>> getDataByIkBpDataSourceBasic(IkBpDataSourceBasic ikBpDataSourceBasic) {
+    private Set<LinkedHashMap<String, Object>> getDataByIkBpDataSourceBasic(IkBpDataSourceBasic ikBpDataSourceBasic,String tableName,String columnName) {
         SDsnaDsSettingNew sDsnaDsSettingNew = getSDsnaDsSettingNew(ikBpDataSourceBasic);
         // 根据不 数据库进行获取 所有表名称、表里有多少数据、字段名称、字段是不是主键、字段类型、字段长度、字段精度
         // 根据不同数据库类型 编写不同的sql
@@ -387,7 +508,7 @@ public class EigenvalueServiceImpl implements EigenvalueService {
         } else if (ikBpDataSourceBasic.getDatabaseType().equals("mysql")) {
             sql = "SELECT T.TABLE_NAME,T.TABLE_ROWS,C.COLUMN_KEY,C.COLUMN_NAME,C.DATA_TYPE,C.CHARACTER_MAXIMUM_LENGTH " +
                     "FROM INFORMATION_SCHEMA.TABLES T JOIN INFORMATION_SCHEMA.COLUMNS C ON T.TABLE_NAME = C.TABLE_NAME AND T.TABLE_SCHEMA = C.TABLE_SCHEMA " +
-                    "WHERE T.TABLE_SCHEMA = '" + sDsnaDsSettingNew.getDatabaseName() + "' AND C.DATA_TYPE NOT IN ('decimal','date','datetime','time','boolean') AND C.COLUMN_KEY != 'PRI' AND  T.TABLE_ROWS > 0 ORDER BY T.TABLE_NAME";
+                    "WHERE T.TABLE_SCHEMA = '" + sDsnaDsSettingNew.getDatabaseName() + "' AND T.TABLE_NAME = '"+ tableName +"' AND C.COLUMN_NAME = '"+ columnName +"' AND C.DATA_TYPE NOT IN ('decimal','date','datetime','time','boolean') AND C.COLUMN_KEY != 'PRI' AND  T.TABLE_ROWS > 0 ORDER BY T.TABLE_NAME";
         } else if (ikBpDataSourceBasic.getDatabaseType().equals("sqlserver")) {
 
         } else if (ikBpDataSourceBasic.getDatabaseType().equals("postgresql")) {
@@ -421,7 +542,7 @@ public class EigenvalueServiceImpl implements EigenvalueService {
      */
     private List<Map<String, Object>> getTableColumnEigenvalue(int dataSourceId, String tableName, String columnName) {
         List<Map<String, Object>> maps = ikBpDataSourceBasicMapper.selectTableIdAndColumnId(dataSourceId, tableName, columnName);
-        System.out.println(maps);
+//        System.out.println(maps);
         return maps;
     }
 

@@ -25,4 +25,10 @@ import java.util.stream.Collectors;
 public interface EigenvalueService  {
 
     void putData(List<Integer> dataSourceId);
+
+
+    /**
+     * 正常返回为0   异常返回为1
+     */
+    int putDataNew();
 }
