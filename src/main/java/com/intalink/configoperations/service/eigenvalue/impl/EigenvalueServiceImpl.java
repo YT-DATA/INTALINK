@@ -12,6 +12,7 @@ import com.intalink.configoperations.domain.dataRelationShip.vo.DataTable;
 import com.intalink.configoperations.domain.dataSource.IkBpDataSourceBasic;
 import com.intalink.configoperations.domain.dataSource.SDsnaDsSettingNew;
 import com.intalink.configoperations.mapper.dataSource.IkBpDataSourceBasicMapper;
+import com.intalink.configoperations.service.dataTableRelationBasic.IkRpDataTableRelationBasicService;
 import com.intalink.configoperations.service.eigenvalue.EigenvalueService;
 import com.intalink.configoperations.utils.DESUtils;
 import com.intalink.configoperations.utils.DataSourceUtil;
@@ -41,16 +42,11 @@ public class EigenvalueServiceImpl implements EigenvalueService {
     @Autowired
     public IkBpDataSourceBasicMapper ikBpDataSourceBasicMapper;
 
+    @Autowired
+    public IkRpDataTableRelationBasicService ikRpDataTableRelationBasicService;
+
     private static final String LOG_FILE_PATH = "tableAndColumnNum_log.txt"; // 日志文件路径
 
-    public Jedis jedis = RedisUtil.getJedis();
-
-//    public Jedis getJedis() {
-////        Jedis jedis = new Jedis("39.106.28.179", 6379);
-//        Jedis jedis = new Jedis("localhost", 6379);
-////        jedis.auth("Liuzong123456.");
-//        return jedis;
-//    }
 
     /**
      * 将指定数据源数据存入Redis
@@ -62,12 +58,11 @@ public class EigenvalueServiceImpl implements EigenvalueService {
         //  根据数据源id获取数据对应信息
         if (dataSourceIds != null && dataSourceIds.size() > 0) {
             // 删除这些数据源相关的信息
-            deleteByDataSourceId(dataSourceIds, jedis);
+            deleteByDataSourceId(dataSourceIds);
             //将这些数据源Id进行字符串拼接存入Redis 对应的Key是 dataSource
-            addDataSource(dataSourceIds, jedis);
+            addDataSource(dataSourceIds);
             System.out.println("数据源信息存入Redis成功");
         }
-        jedis.close();
     }
 
     /**
@@ -83,12 +78,11 @@ public class EigenvalueServiceImpl implements EigenvalueService {
             if (dataSourceIds != null && dataSourceIds.size() > 0) {
                 // 删除这些数据源相关的信息
                 System.out.println("开始删除redis中相关的数据");
-                deleteByDataSourceId(dataSourceIds, jedis);
+                deleteByDataSourceId(dataSourceIds);
                 //将这些数据源Id进行字符串拼接存入Redis 对应的Key是 dataSource
-                addDataSource(dataSourceIds, jedis);
+                addDataSource(dataSourceIds);
                 System.out.println("数据源信息存入Redis成功");
             }
-            jedis.close();
             return 0;
         } catch (Exception e) {
             System.out.println(e);
@@ -100,9 +94,8 @@ public class EigenvalueServiceImpl implements EigenvalueService {
      * 第一层 根据数据源id插入到Redis中    dataSource：['dataSource-10','dataSource-11','dataSource-12']
      *
      * @param dataSourceIds
-     * @param jedis
      */
-    private void addDataSource(List<Integer> dataSourceIds, Jedis jedis) {
+    private void addDataSource(List<Integer> dataSourceIds) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         try (FileWriter fileWriter = new FileWriter(LOG_FILE_PATH, true); PrintWriter printWriter = new PrintWriter(fileWriter)) {
             String tableNum = "0";
@@ -120,27 +113,28 @@ public class EigenvalueServiceImpl implements EigenvalueService {
                 if (dataSource != null && dataSource.getDataSourceId() != null) {
                     String newDataSourceValue = "dataSource-" + dataSource.getDataSourceId();
                     // 判断新数据源值是否存在
-                    boolean memberExists = jedis.sismember("dataSource", newDataSourceValue);
+                    boolean memberExists = RedisUtil.getSismember("dataSource", newDataSourceValue);
                     // 如果新数据不存在，则插入新数据
                     if (!memberExists) {
-                        jedis.sadd("dataSource", newDataSourceValue);
+                        RedisUtil.addToList("dataSource", newDataSourceValue);
                         //  第二层需要 数据源的Value  作为数据表信息的key  value  dataTable-  加上数据表的id
                         // 第二层是 数据表信息  key:value  String:List<String>    dataSource-21:[dataTable-10, dataTable-11]
                         // 添加第二层信息
                         // 根据数据源获取所有表和列的信息
                         List<Map<String, Object>> tableAndColomnByDataSourceId = getTableAndColomnByDataSourceId(dataSourceId);
-                        addDataTable(newDataSourceValue, tableAndColomnByDataSourceId, jedis);
+                        addDataTable(newDataSourceValue, tableAndColomnByDataSourceId);
                     }
                 }
                 printWriter.println("数据源：" + dataSourceId + "，数据表数量：" + tableNum + "，数据项数量：" + columnNum + "");
             }
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace(); // 在控制台输出异常信息
         }
     }
 
     /**
      * 根据数据源id获取对应的数据表和数据项的数量
+     *
      * @param dataSourceId
      * @return
      */
@@ -155,16 +149,16 @@ public class EigenvalueServiceImpl implements EigenvalueService {
      * @param newDataSourceValue
      * @param tableAndColomnByDataSourceId
      */
-    private void addDataTable(String newDataSourceValue, List<Map<String, Object>> tableAndColomnByDataSourceId, Jedis jedis) {
+    private void addDataTable(String newDataSourceValue, List<Map<String, Object>> tableAndColomnByDataSourceId) {
         // 根据数据源获取所有表和列的信息
         Set<String> table = new HashSet<>();
         for (Map<String, Object> stringObjectMap : tableAndColomnByDataSourceId) {
 //            System.out.println(stringObjectMap.get("data_table_id"));
             String newRedisTableValue = "dataTable-" + stringObjectMap.get("data_table_id").toString();
-            boolean memberExists = jedis.sismember(newDataSourceValue, newRedisTableValue);
+            boolean memberExists = RedisUtil.getSismember(newDataSourceValue, newRedisTableValue);
             if (!memberExists) {
                 // 如果新成员不存在，则插入新成员
-                jedis.sadd(newDataSourceValue, newRedisTableValue);
+                RedisUtil.addToList(newDataSourceValue, newRedisTableValue);
             }
             table.add(stringObjectMap.get("data_table_id").toString());
         }
@@ -184,7 +178,7 @@ public class EigenvalueServiceImpl implements EigenvalueService {
         //                                             }]
         //                               }]
 
-        addDataColumn(table, newDataSourceValue, jedis);
+        addDataColumn(table, newDataSourceValue);
     }
 
     /**
@@ -192,9 +186,8 @@ public class EigenvalueServiceImpl implements EigenvalueService {
      *
      * @param tableAndColomnByDataSourceData
      * @param newDataSourceValue
-     * @param jedis
      */
-    private void addDataColumn(Set<String> tableAndColomnByDataSourceData, String newDataSourceValue, Jedis jedis) {
+    private void addDataColumn(Set<String> tableAndColomnByDataSourceData, String newDataSourceValue) {
         String[] split = newDataSourceValue.split("-");
 
         for (String tableId : tableAndColomnByDataSourceData) {
@@ -226,8 +219,8 @@ public class EigenvalueServiceImpl implements EigenvalueService {
                 dataItem.setDataTable("dataTable-" + tableAndColomnByDataSourceDatum.get("data_table_id").toString());
 
                 // 添加第四层   Map< 数据源id-数据表id-数据项id , 特征值 >
-                String s = addDataEigenvalue(dataItem.getDataItem(), jedis);
-                dataItem.setDataNum(Integer.valueOf(s));
+//                String s = addDataEigenvalue(dataItem.getDataItem(), jedis);
+//                dataItem.setDataNum(Integer.valueOf(s));
                 dataItems.add(dataItem);
             }
             DataTable dataSourceRedis = new DataTable();
@@ -237,7 +230,7 @@ public class EigenvalueServiceImpl implements EigenvalueService {
             String jsonStr = null;
             try {
                 jsonStr = objectMapper.writeValueAsString(dataSourceRedis);
-                jedis.set("dataTable-" + maps.get(0).get("data_table_id").toString(), jsonStr);
+                RedisUtil.setValue("dataTable-" + maps.get(0).get("data_table_id").toString(), jsonStr);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
@@ -251,11 +244,9 @@ public class EigenvalueServiceImpl implements EigenvalueService {
      * 第四层  Map< 数据源id-数据表id-数据项id , 特征值 >
      *
      * @param dataSourceDataTableDataColumn
-     * @param jedis
      */
-    private String addDataEigenvalue(String dataSourceDataTableDataColumn, Jedis jedis) {
+    private String addDataEigenvalue(String dataSourceDataTableDataColumn) {
         String[] split = dataSourceDataTableDataColumn.split("-");
-
 
         IkBpDataSourceBasic ikBpDataSourceBasic = getDataSource(Integer.valueOf(split[0]));
 
@@ -294,6 +285,7 @@ public class EigenvalueServiceImpl implements EigenvalueService {
                                 rowNum = stringObjectLinkedHashMap.get("TABLE_ROWS").toString();
                         }
                     }
+                    Jedis jedis = RedisUtil.getJedis();
                     // 根据数据源id获取数据对应信息   Map< 数据源id-数据表id-数据项id , 特征值 >
                     for (Map.Entry<String, List<String>> entry : getEigenvalueKeyNew(rowNum, tableName, columnName, sDsnaDsSettingNew, ikBpDataSourceBasic).entrySet()) {
                         String key = entry.getKey();
@@ -304,12 +296,36 @@ public class EigenvalueServiceImpl implements EigenvalueService {
                         // 将 key-value 存入 Redis，使用 Redis 的列表（List）结构
                         jedis.lpush(key, valuesArray);
                     }
+                    jedis.close();
                 }
 
             }
 
         }
         return eigenvalueNum;
+    }
+
+
+    private List<String> addDataEigenvalueNew(String dataSourceDataTableDataColumn1, String dataSourceDataTableDataColumn2) {
+        // getEigenvalueBySourceTableColumn  根据DataSourceDataTableDataColumn 来获取数据key
+        String dataSourceDataTableDataColumn1New = ikRpDataTableRelationBasicService.getEigenvalueBySourceTableColumn(dataSourceDataTableDataColumn1);
+        String dataSourceDataTableDataColumn2New = ikRpDataTableRelationBasicService.getEigenvalueBySourceTableColumn(dataSourceDataTableDataColumn2);
+
+        List<String> newDataSourceTableColumn = new ArrayList<>();
+
+        String s1 = dataSourceDataTableDataColumn1New != null ? addDataEigenvalue(dataSourceDataTableDataColumn1New) : null;
+        String s2 = dataSourceDataTableDataColumn2New != null ? addDataEigenvalue(dataSourceDataTableDataColumn2New) : null;
+
+        if (dataSourceDataTableDataColumn1New != null && s1 != null && !"0".equals(s1)) {
+            newDataSourceTableColumn.add(dataSourceDataTableDataColumn1New);
+        }
+
+        if (dataSourceDataTableDataColumn2New != null && s2 != null && !"0".equals(s2)) {
+            newDataSourceTableColumn.add(dataSourceDataTableDataColumn2New);
+        }
+
+        return newDataSourceTableColumn;
+
     }
 
     /**
@@ -326,9 +342,8 @@ public class EigenvalueServiceImpl implements EigenvalueService {
      * 根据数据源id删除Redis中对应的数据
      *
      * @param dataSourceId
-     * @param jedis
      */
-    private void deleteByDataSourceId(List<Integer> dataSourceId, Jedis jedis) {
+    private void deleteByDataSourceId(List<Integer> dataSourceId) {
         // 将传递的dataSourceId转换为字符串数组
         String[] elementsToDelete = dataSourceId.stream()
                 .map(id -> "dataSource-" + id)
@@ -336,7 +351,7 @@ public class EigenvalueServiceImpl implements EigenvalueService {
         try {
 
             for (String element : elementsToDelete) {
-                deleteRedisDataByDataSourceKey(jedis, element);
+                deleteRedisDataByDataSourceKey(element);
             }
         } catch (JedisDataException e) {
             System.out.println("redis删除数据失败错误信息：" + e);
@@ -347,44 +362,41 @@ public class EigenvalueServiceImpl implements EigenvalueService {
     /**
      * 删除第一层相应的数据源信息
      *
-     * @param jedis
      * @param dataSource
      */
-    private void deleteRedisDataByDataSourceKey(Jedis jedis, String dataSource) {
+    private void deleteRedisDataByDataSourceKey(String dataSource) {
         // 删除第一层的数据源   dataSource = dataSource-XXX
-        jedis.srem("dataSource", dataSource);
+        RedisUtil.sremValue("dataSource", dataSource);
         // 递归删除第二层及其以下的数据
-        deleteDataTable(jedis, dataSource);
+        deleteDataTable(dataSource);
     }
 
     /**
      * 删除第二层数据源对应的数据表信息
      *
-     * @param jedis
      * @param dataSource
      */
-    private void deleteDataTable(Jedis jedis, String dataSource) {
+    private void deleteDataTable(String dataSource) {
         // 获取第二层的所有数据表名称
-        Set<String> dataTables = jedis.smembers(dataSource);
+        Set<String> dataTables = RedisUtil.getSmembers(dataSource);
 
         for (String dataTable : dataTables) {
             // 删除第二层的数据表
-            jedis.srem(dataSource, dataTable);
+            RedisUtil.sremValue(dataSource, dataTable);
 
             // 递归删除第三层及其以下的数据
-            deleteDataColumns(jedis, dataTable);
+            deleteDataColumns(dataTable);
         }
     }
 
     /**
      * 删除第三层数据表的数据项信息
      *
-     * @param jedis
      * @param dataTable
      */
-    private void deleteDataColumns(Jedis jedis, String dataTable) {
+    private void deleteDataColumns(String dataTable) {
         // 获取第三层的所有数据项名称
-        String redisDataByRedisKey = getRedisDataByRedisKey(jedis, dataTable);
+        String redisDataByRedisKey = RedisUtil.getRedisDataByRedisKey(dataTable);
         if (redisDataByRedisKey != null && redisDataByRedisKey.length() > 0 && !"Unsupported data type".equals(redisDataByRedisKey)) {
             // 创建 JsonParser 对象
             JsonParser parser = new JsonParser();
@@ -399,48 +411,21 @@ public class EigenvalueServiceImpl implements EigenvalueService {
             List<String> dataItems = new ArrayList<>();
             for (Map<String, Object> item : dataList) {
                 //  删除第五层数据项中dataItemValue为key对应的数据
-                deleteEigenvalue(jedis, (String) item.get("dataItem"));
+                deleteEigenvalue((String) item.get("dataItem"));
             }
-            jedis.del(dataTable);
+            RedisUtil.delByRedisKey(dataTable);
         }
     }
 
-    /**
-     * 根据rediskey的类型获取数据
-     */
-    private String getRedisDataByRedisKey(Jedis jedis, String redisKey) {
-        try {
-            // 检查数据类型
-            String type = jedis.type(redisKey);
-            switch (type) {
-                case "string":
-                    return jedis.get(redisKey);
-                case "list":
-                    return jedis.lrange(redisKey, 0, -1).toString();
-                case "set":
-                    return jedis.smembers(redisKey).toString();
-                case "zset":
-                    return jedis.zrange(redisKey, 0, -1).toString();
-                case "hash":
-                    return jedis.hgetAll(redisKey).toString();
-                default:
-                    return "Unsupported data type";
-            }
-        } catch (JedisDataException e) {
-            // 捕获异常并处理
-            return "Error: " + e.getMessage();
-        }
-    }
 
     /**
      * 删除第五层数据项中dataItemValue为key对应的数据
      *
-     * @param jedis
      * @param dataItemValue
      */
-    private void deleteEigenvalue(Jedis jedis, String dataItemValue) {
+    private void deleteEigenvalue(String dataItemValue) {
         // 直接根据dataItemValue删除第五层数据
-        jedis.del(dataItemValue);
+        RedisUtil.delByRedisKey(dataItemValue);
     }
 
     /**
@@ -498,7 +483,7 @@ public class EigenvalueServiceImpl implements EigenvalueService {
      * @param ikBpDataSourceBasic
      * @return
      */
-    private Set<LinkedHashMap<String, Object>> getDataByIkBpDataSourceBasic(IkBpDataSourceBasic ikBpDataSourceBasic,String tableName,String columnName) {
+    private Set<LinkedHashMap<String, Object>> getDataByIkBpDataSourceBasic(IkBpDataSourceBasic ikBpDataSourceBasic, String tableName, String columnName) {
         SDsnaDsSettingNew sDsnaDsSettingNew = getSDsnaDsSettingNew(ikBpDataSourceBasic);
         // 根据不 数据库进行获取 所有表名称、表里有多少数据、字段名称、字段是不是主键、字段类型、字段长度、字段精度
         // 根据不同数据库类型 编写不同的sql
@@ -508,7 +493,7 @@ public class EigenvalueServiceImpl implements EigenvalueService {
         } else if (ikBpDataSourceBasic.getDatabaseType().equals("mysql")) {
             sql = "SELECT T.TABLE_NAME,T.TABLE_ROWS,C.COLUMN_KEY,C.COLUMN_NAME,C.DATA_TYPE,C.CHARACTER_MAXIMUM_LENGTH " +
                     "FROM INFORMATION_SCHEMA.TABLES T JOIN INFORMATION_SCHEMA.COLUMNS C ON T.TABLE_NAME = C.TABLE_NAME AND T.TABLE_SCHEMA = C.TABLE_SCHEMA " +
-                    "WHERE T.TABLE_SCHEMA = '" + sDsnaDsSettingNew.getDatabaseName() + "' AND T.TABLE_NAME = '"+ tableName +"' AND C.COLUMN_NAME = '"+ columnName +"' AND C.DATA_TYPE NOT IN ('decimal','date','datetime','time','boolean') AND C.COLUMN_KEY != 'PRI' AND  T.TABLE_ROWS > 0 ORDER BY T.TABLE_NAME";
+                    "WHERE T.TABLE_SCHEMA = '" + sDsnaDsSettingNew.getDatabaseName() + "' AND T.TABLE_NAME = '" + tableName + "' AND C.COLUMN_NAME = '" + columnName + "' AND C.DATA_TYPE NOT IN ('decimal','date','datetime','time','boolean') AND C.COLUMN_KEY != 'PRI' AND  T.TABLE_ROWS > 0 ORDER BY T.TABLE_NAME";
         } else if (ikBpDataSourceBasic.getDatabaseType().equals("sqlserver")) {
 
         } else if (ikBpDataSourceBasic.getDatabaseType().equals("postgresql")) {

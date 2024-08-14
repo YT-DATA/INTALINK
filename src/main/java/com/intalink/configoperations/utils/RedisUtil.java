@@ -5,6 +5,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Protocol;
+import redis.clients.jedis.exceptions.JedisDataException;
 
 import java.util.List;
 import java.util.Set;
@@ -92,7 +93,7 @@ public class RedisUtil {
     }
 
     // 增加最后一层节点中的列表元素
-    public void addToList(String key, String value) {
+    public static void addToList(String key, String value) {
         try (Jedis jedis = RedisUtil.getJedis()) {
             jedis.rpush(key + ":list", value); // 添加列表元素
             closeJedisCon(jedis);
@@ -126,23 +127,25 @@ public class RedisUtil {
         }
         return null;
     }
+
     /**
      * 获取Redis列表中的所有数据
      *
      * @param listKey 列表的键
      * @return 列表中所有元素的List
      */
-    public  List<String> fetchAllFromList(String listKey) {
+    public List<String> fetchAllFromList(String listKey) {
         try (Jedis jedis = RedisUtil.getJedis()) {
             // 使用LRANGE命令获取所有元素
             List<String> values = jedis.lrange(listKey, 0, -1);
             closeJedisCon(jedis);
-            return values ;
+            return values;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
+
     /**
      * 批量向Redis列表添加数据
      *
@@ -163,9 +166,10 @@ public class RedisUtil {
 
     /**
      * 关闭jedis链接
+     *
      * @param jedis
      */
-    public static void closeJedisCon(Jedis jedis){
+    public static void closeJedisCon(Jedis jedis) {
         jedis.close();
     }
 
@@ -199,5 +203,78 @@ public class RedisUtil {
         return false;
     }
 
+    /**
+     * 根据rediskey的类型获取数据
+     */
+    public static String getRedisDataByRedisKey(String redisKey) {
+        try (Jedis jedis = RedisUtil.getJedis()) {
+            // 检查数据类型
+            String type = jedis.type(redisKey);
+            switch (type) {
+                case "string":
+                    return jedis.get(redisKey);
+                case "list":
+                    return jedis.lrange(redisKey, 0, -1).toString();
+                case "set":
+                    return jedis.smembers(redisKey).toString();
+                case "zset":
+                    return jedis.zrange(redisKey, 0, -1).toString();
+                case "hash":
+                    return jedis.hgetAll(redisKey).toString();
+                default:
+                    return "Unsupported data type";
+            }
+
+        }
+    }
+
+
+    /**
+     * 判断新数据源值是否存在
+     */
+    public static boolean getSismember(String string, String redisKey) {
+        try (Jedis jedis = RedisUtil.getJedis()) {
+            boolean type = jedis.sismember(string, redisKey);
+            closeJedisCon(jedis);
+            return type;
+        }
+    }
+    /**
+     *  添加set值
+     */
+    public static void setValue(String redisKey, String redisValue) {
+        try (Jedis jedis = RedisUtil.getJedis()) {
+            jedis.set(redisKey, redisValue);
+            closeJedisCon(jedis);
+        }
+    }
+    /**
+     *  srem  删除数据
+     */
+    public static void sremValue(String redisKey, String redisValue) {
+        try (Jedis jedis = RedisUtil.getJedis()) {
+            jedis.srem(redisKey, redisValue);
+            closeJedisCon(jedis);
+        }
+    }
+    /**
+     *  smembers  根据获取所有数据表名称
+     */
+    public static Set<String> getSmembers(String redisKey) {
+        try (Jedis jedis = RedisUtil.getJedis()) {
+            Set<String> smembers = jedis.smembers(redisKey);
+            closeJedisCon(jedis);
+            return smembers;
+        }
+    }
+    /**
+     *  del  根据key直接删除
+     */
+    public static void delByRedisKey(String redisKey) {
+        try (Jedis jedis = RedisUtil.getJedis()) {
+            jedis.del(redisKey);
+            closeJedisCon(jedis);
+        }
+    }
 
 }
