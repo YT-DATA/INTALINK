@@ -116,7 +116,7 @@
 
 ## Licence
 
-Apache License 2.0
+GNU Affero General Public License v3.0
 
 # 联系我们
 - ![企业微信](https://github.com/YT-DATA/INTALINK/assets/162880729/1c739c36-160c-474d-9f9b-c43e46dd1159)
