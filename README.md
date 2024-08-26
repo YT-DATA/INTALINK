@@ -102,7 +102,7 @@ This tool is complex and innovative for databases, and our project is in urgent 
 
 ### License
 
-Apache License 2.0
+GNU Affero General Public License v3.0
 
 ### Contact Us
 - ![企业微信](https://github.com/YT-DATA/INTALINK/assets/162880729/0f34328a-3d8a-4271-b199-96e7bc5e2ca6)
