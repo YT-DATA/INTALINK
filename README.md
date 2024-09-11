@@ -30,6 +30,7 @@
 🔥🔥🔥 [INTALINK Open Source Demo 1.0.3](http://39.106.28.179/intalink/login?redirect=/index)
 
 ![INTALINK Demo Image](https://github.com/YT-DATA/INTALINK/assets/162880729/c297361b-caee-4b73-8e59-20ba01eec4eb)
+![image](https://github.com/user-attachments/assets/e23c010f-4246-4478-90fe-fef757c3d85c)
 
 
 ## Table of Contents
