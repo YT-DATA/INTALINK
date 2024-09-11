@@ -41,7 +41,6 @@
 
 ### Architecture Solution
 
-![INTALINK Architecture Image](https://github.com/yt-data/INTALINK/assets/162880729/efe18b27-5f78-475c-afe0-7c37cbf5f3d6)
 ![图片2](https://github.com/user-attachments/assets/2651b719-84dd-43c8-afe3-9aec6d5c867b)
 
 
