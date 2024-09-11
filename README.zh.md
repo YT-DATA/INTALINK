@@ -45,7 +45,7 @@
 # 架构方案
 
 ![image](https://github.com/yt-data/INTALINK/assets/162880729/efe18b27-5f78-475c-afe0-7c37cbf5f3d6)
-![Uploading 图片2.png…]()
+![图片2](https://github.com/user-attachments/assets/867ddb40-db07-4d7c-984e-a171abda378c)
 
 
 ## 核心能力主要有以下几个部分:
