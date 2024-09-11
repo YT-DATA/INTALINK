@@ -45,6 +45,8 @@
 # 架构方案
 
 ![image](https://github.com/yt-data/INTALINK/assets/162880729/efe18b27-5f78-475c-afe0-7c37cbf5f3d6)
+![Uploading 图片2.png…]()
+
 
 ## 核心能力主要有以下几个部分:
 - 自动表间关系生成：自动探测和构建两个数据表之间的关系，通过基础表间关系构建全局数据表拓扑结构。
