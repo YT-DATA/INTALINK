@@ -42,6 +42,8 @@
 ### Architecture Solution
 
 ![图片2](https://github.com/user-attachments/assets/2651b719-84dd-43c8-afe3-9aec6d5c867b)
+![图片1](https://github.com/user-attachments/assets/ef450562-9821-415b-bd57-15a1549515c7)
+
 
 
 #### Core Capabilities include:
