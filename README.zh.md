@@ -30,7 +30,6 @@
 # 效果演示
 🔥🔥🔥 [INTALINK开源演示1.0.3](http://39.106.28.179/intalink/login?redirect=/index)
 
-![image](https://github.com/YT-DATA/INTALINK/assets/162880729/8bfc2bbb-4f93-41e8-a7a3-2732b874ac6c)
 ![image](https://github.com/user-attachments/assets/5aa47014-4e8c-4f7a-8eb3-fea91c085268)
 
 
