@@ -96,6 +96,14 @@
 
 #### Supported Data Sources
 - Provides natural language interaction capabilities with various data sources including Excel, databases, data warehouses, etc.
+- ---  
+
+- # 🚀 Foolproof Deployment Guide
+
+To help everyone quickly get started with deploying the INTALINK platform, we have prepared a detailed **Foolproof Deployment Guide**. Whether you are a developer or a new user, you can easily complete the deployment by following the steps.
+
+[**Click here to view the Foolproof Deployment Guide**](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Foolproof%20Deployment%20Guide.md)
+
 
 ### Contribution
 
