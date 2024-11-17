@@ -73,9 +73,6 @@ docker pull yuantuo/intalink_redis:6.2.6
 ```
 ![image](https://github.com/user-attachments/assets/a962be6e-dacd-4c4a-86fa-c64cfaa24a49)
 
-![image](https://github.com/user-attachments/assets/6dfc98ea-1a6d-4076-b041-c3f0f43990c4)
-
-
 或者可以将 docker_images.zip 中的文件全部解压到文件夹中：
 
 ```bash
