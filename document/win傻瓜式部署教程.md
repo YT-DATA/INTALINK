@@ -41,7 +41,8 @@
 
 ### 运行
 
-1. 安装完成后，在桌面双击 `Docker Desktop` 图标启动 Docker。  
+1. 安装完成后，在桌面双击 `Docker Desktop` 图标启动 Docker。  ![image](https://github.com/user-attachments/assets/9eb4590f-59fe-4067-82c6-c1891ccd5975)
+
 2. 启动后会在 Windows 任务栏出现鲸鱼图标。  
 3. 等待片刻，当鲸鱼图标静止时，说明 Docker 启动成功，此时可以打开 PowerShell 使用 Docker。
 
@@ -55,34 +56,39 @@
 
 ```bash
 docker pull yuantuo/intalink_nginx:1.23.1
+```
+![image](https://github.com/user-attachments/assets/adc2a0c3-2578-48c6-852a-b73c08ffd4f2)
+```bash
 docker pull yuantuo/intalink_service:8_latest
+```
+![image](https://github.com/user-attachments/assets/80c0a2ab-71c4-402d-9eed-aa747c2915dd)
+
+```bash
 docker pull yuantuo/intalink_mysql:8.0.27
+```
+![image](https://github.com/user-attachments/assets/ddc59731-4cab-4932-b4b4-59e421416176)
+
+```bash
 docker pull yuantuo/intalink_redis:6.2.6
-使用 docker_images.zip 解压镜像
-将 docker_images.zip 文件中的内容全部解压到某个文件夹中。
+```
+![image](https://github.com/user-attachments/assets/a962be6e-dacd-4c4a-86fa-c64cfaa24a49)
 
-使用以下命令将 .tar 包加载为 Docker 镜像：
+![image](https://github.com/user-attachments/assets/6dfc98ea-1a6d-4076-b041-c3f0f43990c4)
 
-bash
-复制代码
+
+或者可以将 docker_images.zip 中的文件全部解压到文件夹中：
+
+```bash
 docker load -i <path>/yuantuo_intalink_mysql_8.0.27.tar
 docker load -i <path>/yuantuo_intalink_nginx_1.23.1.tar
 docker load -i <path>/yuantuo_intalink_redis_6.2.6.tar
 docker load -i <path>/yuantuo_intalink_service_8_latest.tar
-注意: <path> 是 .tar 文件所在的文件夹路径，例如 /home/user/docker_images。
+```
 
-使用以下命令检查是否成功加载所有镜像：
+使用： docker images 命令查看确认是否将这四个tar包都转成了镜像
+创建一个文件夹,例D:\docker-compose,创建文件docker-compose.yaml  内容如下(D:\docker-compose\改为新创建文件夹的路径):
 
-bash
-复制代码
-docker images
-配置 docker-compose
-创建一个文件夹，例如 D:\docker-compose。
-
-在该文件夹中创建 docker-compose.yaml 文件，并添加以下内容（请将 D:\docker-compose 替换为您的实际路径）：
-
-yaml
-复制代码
+```bash
 version: '2.2'
 
 networks:
@@ -131,32 +137,25 @@ services:
     networks:
       - yuantuo
     restart: always
-启动服务
-使用管理员权限打开 PowerShell。
+```
+使用管理员打开powershell，进入到新创建文件夹路径下，执行以下命令：
+```bash
+docker-compose  up  -d
+```
 
-进入您创建的文件夹路径，例如：D:\docker-compose。
+![image](https://github.com/user-attachments/assets/4f14c4c1-02e3-4f6c-a38f-b1c9d0925c82)
+以上界面即为启动成功
 
-执行以下命令启动容器：
 
-bash
-复制代码
-docker-compose up -d
-启动成功后，您将看到以下界面提示服务已成功启动。
+# 页面访问
 
-页面访问
 根据实际地址访问页面：
+```bash
+页面访问：http://<IP>/intalinkOpen/index
+```
 
-plaintext
-复制代码
-http://<IP>/intalinkOpen/index
-注意: 请将 <IP> 替换为您的服务器 IP 地址。
+![image](https://github.com/user-attachments/assets/a0d20bc8-6cb0-43ec-b074-93cfbe5cf70c)
 
-yaml
-复制代码
-
----
-
-这就是完整的 Markdown 文件内容，确保所有细节都已经包括在内。如果还有任何进一步需求，请告诉我！
 
 
 
