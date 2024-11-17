@@ -116,7 +116,8 @@
 
 为了方便大家快速上手部署INTALINK平台，我们特地准备了详细的 **傻瓜式部署使用教程**。无论你是开发人员还是新手用户，都可以按照步骤轻松完成部署。
 
-[**点击这里查看傻瓜式部署使用教程**](https://github.com/YT-DATA/INTALINK/blob/main/document/%E5%82%BB%E7%93%9C%E5%BC%8F%E9%83%A8%E7%BD%B2%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B.md)
+[**点击这里查看win傻瓜式部署使用教程**](https://github.com/YT-DATA/INTALINK/blob/main/document/win%E5%82%BB%E7%93%9C%E5%BC%8F%E9%83%A8%E7%BD%B2%E6%95%99%E7%A8%8B.md)
+[**点击这里查看linux傻瓜式部署使用教程**](https://github.com/YT-DATA/INTALINK/blob/main/document/%E5%82%BB%E7%93%9C%E5%BC%8F%E9%83%A8%E7%BD%B2%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B.md)
 
 # 贡献
 
