@@ -43,7 +43,7 @@
 
 # 文档
 
-- [intalinkDocments](#架构方案)
+- [intalinkDocments](https://yt-data.github.io/intalinkDocment/)
 
 # 架构方案
 
