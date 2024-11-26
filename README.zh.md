@@ -18,7 +18,7 @@
 
 <p align="center">
   <a href="https://github.com/YT-DATA/INTALINK/blob/main/README.md">English</a> |
-  <a href="https://discord.gg/n53PxSrh">Discord</a> |
+  <a href="https://discord.com/invite/FvhqEZ6z95">Discord</a> |
   <a href="https://www.yuque.com/chenshiyi-ur8az/tt35ml">文档</a> |
   <a href="#联系我们">微信</a> |  
   <a href="https://github.com/yt-data/community/blob/main/README.md">社区</a> |
