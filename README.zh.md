@@ -8,7 +8,7 @@
   <a href="https://github.com/yt-data?tab=followers">
     <img src="https://img.shields.io/github/followers/yt-data.svg?style=social&label=Follow" alt="GitHub followers"/>
   </a>
-  <a href="https://discord.gg/n53PxSrh">
+  <a href="https://discord.com/invite/FvhqEZ6z95">
     <img src="https://img.shields.io/badge/INTALINK-Join%20intalink-blue.svg?style=social&logo=discord" alt="Join Discord"/>
   </a>
   <a href="你的Stack Overflow链接">
