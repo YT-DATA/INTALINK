@@ -102,8 +102,8 @@
 
 To help everyone quickly get started with deploying the INTALINK platform, we have prepared a detailed **Foolproof Deployment Guide**. Whether you are a developer or a new user, you can easily complete the deployment by following the steps.
 
-- [**Click here to view the Win Quick Deployment Guide.**](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Win%20Foolproof%20deployment%20Guide.md)
-- [**Click here to view the Linux Quick Deployment Guide.**](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Foolproof%20Deployment%20Guide.md)
+- [**Click here to view the Win Quick Deployment Guide.**](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Win%20Quick%20Deployment%20Guide.md)
+- [**Click here to view the Linux Quick Deployment Guide.**](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Linux%20Quick%20Deployment%20Guide.md)
 - [**Click here to view the Mac Quick Deployment Guide.**](https://github.com/YT-DATA/INTALINK/blob/main/documentEN/Mac%20Quick%20Deployment%20Guide.md)
 
 
