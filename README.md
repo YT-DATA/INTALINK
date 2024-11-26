@@ -17,7 +17,7 @@
 
 <p align="center">
   <a href="https://github.com/YT-DATA/INTALINK/blob/main/README.zh.md">Chinese</a> |
-  <a href="https://discord.gg/n53PxSrh">Discord</a> |
+  <a href="https://discord.com/invite/FvhqEZ6z95">Discord</a> |
   <a href="https://www.yuque.com/chenshiyi-ur8az/tt35ml">Documentation</a> |
   <a href="#contact-us">WeChat</a> |  
   <a href="https://github.com/yt-data/community/blob/main/README.md">Community</a> |
